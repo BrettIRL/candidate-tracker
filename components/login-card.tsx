@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const loginSchema = z.object({
-  email: z.string().email().nonempty('Email is required'),
+  email: z.string().email().min(1, 'Email is required'),
   password: z.string().min(6, 'Password is required'),
 });
 
@@ -43,7 +43,10 @@ export default function LoginCard() {
       email: data.email.toLowerCase(),
       password: data.password,
       redirect: false,
-      callbackUrl: searchParams?.get('from') || '/',
+      callbackUrl:
+        searchParams?.get('from') ||
+        process.env.NEXT_PUBLIC_AUTHENTICATED_REDIRECT ||
+        '/',
     });
 
     setIsLoading(false);
@@ -53,7 +56,11 @@ export default function LoginCard() {
     }
 
     // NOTE: Using router.push because redirect wouldn't work
-    router.push(searchParams?.get('from') || '/');
+    router.push(
+      searchParams?.get('from') ||
+        process.env.NEXT_PUBLIC_AUTHENTICATED_REDIRECT ||
+        '/',
+    );
   };
 
   return (

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '@/styles/globals.css';
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
