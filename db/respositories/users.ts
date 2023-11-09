@@ -1,12 +1,21 @@
-import { eq } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { users } from '@/db/schema/users';
-import type { User, NewUser } from '@/db/schema/users';
+import type { User, NewUser, SafeUser } from '@/db/schema/users';
 
 const connectionString = process.env.DATABASE_URL!;
 const client = postgres(connectionString);
 export const db = drizzle(client);
+
+export async function deleteUser(id: string) {
+  return db.delete(users).where(eq(users.id, id));
+}
+
+export async function getUsers(): Promise<SafeUser[]> {
+  const { password, ...rest } = getTableColumns(users);
+  return db.select({ ...rest }).from(users);
+}
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
@@ -24,4 +33,15 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
 export async function insertUser(user: NewUser): Promise<User[]> {
   return db.insert(users).values(user).returning();
+}
+
+export async function updateUser(id: string, data: Partial<User>) {
+  const { password, ...rest } = getTableColumns(users);
+  return db
+    .update(users)
+    .set({ ...data })
+    .where(eq(users.id, id))
+    .returning({
+      ...rest,
+    });
 }

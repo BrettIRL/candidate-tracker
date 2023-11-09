@@ -13,9 +13,9 @@ interface UserRequestData {
 export async function POST(req: Request) {
   const { email, name, password }: UserRequestData = await req.json();
 
-  if (!email || !password) {
+  if (!email || !password || !name) {
     return NextResponse.json(
-      { message: 'Both email and password are required.' },
+      { message: 'Required fields are missing.' },
       { status: 400 },
     );
   }
@@ -31,8 +31,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ user }, { status: 201 });
-  } catch (err) {
-    logger.error(err);
+  } catch (error) {
+    logger.error(error);
     return NextResponse.json(
       { message: 'Error saving user to database' },
       { status: 422 },
