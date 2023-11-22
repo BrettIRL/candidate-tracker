@@ -1,18 +1,14 @@
 import { columns } from './columns';
+import { DashboardHeader } from '@/components/dashboard-header';
 import { DataTable } from '@/components/data-table';
-import { getUsers } from '@/db/respositories/users';
+import { getUsers } from '@/db/repositories/users';
 
 export default async function UsersPage() {
   const users = (await getUsers()) || [];
 
   return (
     <div className="grid items-start gap-8">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h1 className="pb-1 text-3xl font-bold tracking-tight">Users</h1>
-          <p className="text-muted-foreground">Manage users and user roles.</p>
-        </div>
-      </div>
+      <DashboardHeader heading="Users" text="Manage users and user roles" />
       <DataTable data={users} columns={columns} />
     </div>
   );

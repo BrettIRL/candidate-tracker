@@ -1,4 +1,4 @@
-import type { SidebarNavItem } from '@/types';
+import type { SidebarNavItem } from '@/ts/types';
 
 export function getNavItemsForPath(
   items: { [key: string]: SidebarNavItem[] },

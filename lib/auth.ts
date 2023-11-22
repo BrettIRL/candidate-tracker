@@ -2,7 +2,8 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { compare } from 'bcryptjs';
 import type { AuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { db, getUserByEmail } from '@/db/respositories/users';
+import { getUserByEmail } from '@/db/repositories/users';
+import { db } from '@/lib/db';
 
 export const authOptions: AuthOptions = {
   adapter: DrizzleAdapter(db),

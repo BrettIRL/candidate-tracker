@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { deleteUser, updateUser } from '@/db/respositories/users';
+import { deleteUser, updateUser } from '@/db/repositories/users';
 import { logger } from '@/lib/logger';
 
 export async function DELETE(

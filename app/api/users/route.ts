@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { hash } from 'bcryptjs';
 import { NextResponse } from 'next/server';
-import { insertUser } from '@/db/respositories/users';
+import { insertUser } from '@/db/repositories/users';
 import { logger } from '@/lib/logger';
 
 interface UserRequestData {

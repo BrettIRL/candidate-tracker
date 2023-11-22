@@ -1,12 +1,7 @@
 import { eq, getTableColumns } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 import { users } from '@/db/schema/users';
 import type { User, NewUser, SafeUser } from '@/db/schema/users';
-
-const connectionString = process.env.DATABASE_URL!;
-const client = postgres(connectionString);
-export const db = drizzle(client);
+import { db } from '@/lib/db';
 
 export async function deleteUser(id: string) {
   return db.delete(users).where(eq(users.id, id));

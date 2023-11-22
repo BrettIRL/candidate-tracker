@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Icons } from '@/components//icons';
-import { MainNavItem } from '@/types';
+import { MainNavItem } from '@/ts/types';
 
 interface MobileNavProps {
   items: MainNavItem[];

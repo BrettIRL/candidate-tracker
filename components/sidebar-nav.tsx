@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Icons } from '@/components/icons';
 import { getNavItemsForPath } from '@/lib/path';
 import { cn } from '@/lib/utils';
-import type { SidebarNavItem } from '@/types';
+import type { SidebarNavItem } from '@/ts/types';
 
 interface SidebarNavProps {
   items: { [key: string]: SidebarNavItem[] };

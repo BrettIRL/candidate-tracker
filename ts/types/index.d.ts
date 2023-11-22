@@ -1,5 +1,7 @@
 import { Icons } from '@/components/icons';
 
+export * from '@/ts/types/opportunity';
+
 export type MainNavItem = {
   title: string;
   href: string;
