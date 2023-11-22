@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Icons } from '@/components/icons';
 import { MobileNav } from '@/components/mobile-nav';
-import { MainNavItem } from '@/types';
+import { MainNavItem } from '@/ts/types';
 
 interface MainNavProps {
   items?: MainNavItem[];

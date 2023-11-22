@@ -1,4 +1,4 @@
-import type { MainNavItem, SidebarNavItem } from '@/types';
+import type { MainNavItem, SidebarNavItem } from '@/ts/types';
 
 export const DashboardMainNav: MainNavItem[] = [
   { title: 'Opportunities', href: '/dashboard' },
@@ -10,8 +10,16 @@ export const DashboardMainNav: MainNavItem[] = [
 export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
   '/dashboard': [
     { title: 'Opportunities', href: '/dashboard', icon: 'fileText' },
-    { title: 'Users', href: '/dashboard/users', icon: 'user' },
-    { title: 'Settings', href: '/dashboard/settigns', icon: 'settings' },
+    {
+      title: 'Create Opportunity',
+      href: '/dashboard/opportunities/create',
+      icon: 'filePlus',
+    },
+    {
+      title: 'Addresses',
+      href: '/dashboard/opportunities/addresses',
+      icon: 'building',
+    },
   ],
   '/dashboard/candidates': [
     { title: 'Candidates', href: '/dashboard/candidates', icon: 'users' },

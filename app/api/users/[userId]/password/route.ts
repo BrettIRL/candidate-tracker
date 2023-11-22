@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
 import { NextResponse } from 'next/server';
-import { updateUser } from '@/db/respositories/users';
+import { updateUser } from '@/db/repositories/users';
 import { logger } from '@/lib/logger';
 
 export async function POST(

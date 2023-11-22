@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from '@/components/ui/use-toast';
 
 const loginSchema = z.object({
   email: z.string().email().min(1, 'Email is required'),
@@ -52,7 +53,11 @@ export default function LoginCard() {
     setIsLoading(false);
 
     if (!response?.ok || response?.error) {
-      //TODO: Implement toast
+      return toast({
+        title: 'Something went wrong',
+        description: 'Your log in request failed. please try again.',
+        variant: 'destructive',
+      });
     }
 
     // NOTE: Using router.push because redirect wouldn't work
