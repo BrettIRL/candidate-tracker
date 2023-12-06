@@ -9,7 +9,7 @@ export default async function UsersPage() {
   return (
     <div className="grid items-start gap-8">
       <DashboardHeader heading="Users" text="Manage users and user roles" />
-      <DataTable data={users} columns={columns} />
+      <DataTable data={users} columns={columns} filterColumn="name" />
     </div>
   );
 }

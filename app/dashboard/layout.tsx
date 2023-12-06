@@ -3,6 +3,7 @@ import { MainNav } from '@/components/main-nav';
 import { SidebarNav } from '@/components/sidebar-nav';
 import { UserAccountNav } from '@/components/user-account-nav';
 import { DashboardMainNav, DashboardSidebarNav } from '@/config/dashboard';
+import { CandidateProvider } from '@/contexts/CandidateContext';
 import { getCurrentUser } from '@/lib/session';
 
 interface DashboardProps {
@@ -28,8 +29,8 @@ export default async function DashboardLayout({ children }: DashboardProps) {
         <aside className="hidden w-[200px] flex-col py-6 md:flex">
           <SidebarNav items={DashboardSidebarNav} />
         </aside>
-        <main className="flex w-full flex-1 flex-col overflow-hidden py-6">
-          {children}
+        <main className="flex w-full flex-1 flex-col overflow-hidden px-1 py-6">
+          <CandidateProvider>{children}</CandidateProvider>
         </main>
       </div>
       {/* <SiteFooter /> */}
