@@ -1,6 +1,10 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { opportunities } from '../schema/opportunities';
-import type { Candidate, NewCandidate } from '@/db/schema/candidates';
+import type {
+  Candidate,
+  NewCandidate,
+  NewOpportunityToCandidate,
+} from '@/db/schema/candidates';
 import { candidates, opportunitiesToCandidates } from '@/db/schema/candidates';
 import { db } from '@/lib/db';
 
@@ -23,12 +27,39 @@ export async function getCandidatesForOpportunity(opportunityId: number) {
     .where(eq(opportunities.id, opportunityId));
 }
 
-export async function createOrUpdateCandidate(candidate: NewCandidate) {
+export async function createOrUpdateCandidates(newCandidates: NewCandidate[]) {
   return db
     .insert(candidates)
-    .values(candidate)
+    .values(newCandidates)
     .onConflictDoUpdate({
       target: candidates.idNumber,
-      set: { ...candidate, updatedAt: new Date() },
+      set: {
+        lastName: sql`EXCLUDED.last_name`,
+        age: sql`EXCLUDED.age`,
+        disability: sql`EXCLUDED.disability`,
+        phone: sql`EXCLUDED.phone`,
+        suburb: sql`EXCLUDED.suburb`,
+        city: sql`EXCLUDED.city`,
+        province: sql`EXCLUDED.province`,
+        postalCode: sql`EXCLUDED.postal_code`,
+        hasLicense: sql`EXCLUDED.has_license`,
+        hasMatric: sql`EXCLUDED.has_matric`,
+        updatedAt: new Date(),
+      },
+    })
+    .returning();
+}
+
+export async function linkCandidatesToOpportunity(
+  data: Omit<NewOpportunityToCandidate, 'step' | 'createdAt' | 'updatedAt'>[],
+) {
+  return db
+    .insert(opportunitiesToCandidates)
+    .values(data)
+    .onConflictDoNothing({
+      target: [
+        opportunitiesToCandidates.opportunityId,
+        opportunitiesToCandidates.candidateId,
+      ],
     });
 }

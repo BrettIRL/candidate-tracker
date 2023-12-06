@@ -80,3 +80,12 @@ export const opportunitiesToCandidatesRelations = relations(
 
 export type Candidate = typeof candidates.$inferSelect;
 export type NewCandidate = typeof candidates.$inferInsert;
+
+export type OpportunityToCandidate =
+  typeof opportunitiesToCandidates.$inferSelect;
+export type NewOpportunityToCandidate =
+  typeof opportunitiesToCandidates.$inferInsert;
+export type OpportunityToCandidateCriteria = Omit<
+  NewOpportunityToCandidate,
+  'opportunityId' | 'candidateId' | 'step' | 'createdAt' | 'updatedAt'
+>;
