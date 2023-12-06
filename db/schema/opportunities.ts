@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
   date,
   integer,
@@ -8,6 +9,7 @@ import {
   text,
 } from 'drizzle-orm/pg-core';
 import { addresses } from './addresses';
+import { opportunitiesToCandidates } from './candidates';
 
 export const contractEnum = pgEnum('contact_type', [
   'fixed',
@@ -90,6 +92,10 @@ export const opportunities = pgTable('opportunities', {
     onDelete: 'restrict',
   }),
 });
+
+export const opportunitiesRelations = relations(opportunities, ({ many }) => ({
+  opportunitiesToCandidates: many(opportunitiesToCandidates),
+}));
 
 export type Opportunity = typeof opportunities.$inferSelect;
 export type NewOpportunity = typeof opportunities.$inferInsert;
