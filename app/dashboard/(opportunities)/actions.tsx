@@ -1,4 +1,5 @@
 import type { Row } from '@tanstack/react-table';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components//ui/button';
 import { Icons } from '@/components/icons';
 import {
@@ -15,6 +16,8 @@ interface DataTableRowActionsProps {
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
+  const router = useRouter();
+
   return (
     <>
       <DropdownMenu>
@@ -28,7 +31,15 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuItem>View Candidates</DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() =>
+              router.push(
+                `${process.env.NEXT_PUBLIC_AUTHENTICATED_REDIRECT}/candidates/${row.original.id}`,
+              )
+            }
+          >
+            View Candidates
+          </DropdownMenuItem>
           <DropdownMenuItem>Change Status</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="flex cursor-pointer items-center text-destructive focus:text-destructive">

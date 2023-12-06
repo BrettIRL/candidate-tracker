@@ -22,7 +22,7 @@ async function postOpportunity(data: SAYouthOpportunity) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-API-VERSION': '1.0',
+      'X-API-VERSION': process.env.SAYOUTH_API_VERSION || '1.0',
       'X-API-KEY': process.env.SAYOUTH_API_KEY || '',
     },
     body: JSON.stringify(data),

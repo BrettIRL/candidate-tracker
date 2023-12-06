@@ -15,7 +15,7 @@ export default async function Addresses() {
       >
         <AddAddressButton />
       </DashboardHeader>
-      <DataTable data={addresses} columns={columns} />
+      <DataTable data={addresses} columns={columns} filterColumn="name" />
     </div>
   );
 }

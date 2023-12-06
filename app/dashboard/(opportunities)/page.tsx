@@ -9,7 +9,7 @@ export default async function OpportunitiesPage() {
   return (
     <div className="grid items-start gap-8">
       <DashboardHeader heading="Opportunities" text="Manage opportunities" />
-      <DataTable data={opportunities} columns={columns} />
+      <DataTable data={opportunities} columns={columns} filterColumn="title" />
     </div>
   );
 }

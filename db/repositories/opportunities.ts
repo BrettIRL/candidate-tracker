@@ -11,6 +11,13 @@ export async function getOpportunities(): Promise<Opportunity[]> {
   return db.select().from(opportunities);
 }
 
+export async function getOpportunityById(opportunityId: number) {
+  return db
+    .select()
+    .from(opportunities)
+    .where(eq(opportunities.id, opportunityId));
+}
+
 export async function insertOpportunityWithTransaction(
   opportunity: Omit<NewOpportunity, 'providerId'>,
   externalRequest: Promise<Response>,
