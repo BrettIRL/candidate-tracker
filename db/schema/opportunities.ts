@@ -9,13 +9,13 @@ import {
 } from 'drizzle-orm/pg-core';
 import { addresses } from './addresses';
 
-export const contractEnum = pgEnum('contactType', [
+export const contractEnum = pgEnum('contact_type', [
   'fixed',
   'fullTime',
   'partTime',
 ]);
 
-export const salaryTypeEnum = pgEnum('salaryType', [
+export const salaryTypeEnum = pgEnum('salary_type', [
   'baseFixed',
   'baseHourly',
   'baseCommission',
@@ -25,7 +25,7 @@ export const salaryTypeEnum = pgEnum('salaryType', [
   'unspecified',
 ]);
 
-export const salaryFrequencyEnum = pgEnum('salaryFrequency', [
+export const salaryFrequencyEnum = pgEnum('salary_frequency', [
   'weekly',
   'biweekly',
   'monthly',
@@ -70,13 +70,13 @@ export const raceEnum = pgEnum('race', [
 
 export const opportunities = pgTable('opportunities', {
   id: serial('id').primaryKey(),
-  providerId: text('providerId'),
+  providerId: text('provider_id'),
   title: text('title').notNull(),
-  contractType: contractEnum('contactType').notNull(),
+  contractType: contractEnum('contact_type').notNull(),
   capacity: integer('capacity').notNull(),
-  closingDate: date('closingDate').notNull(),
-  salaryType: salaryTypeEnum('salaryType').notNull(),
-  salaryFrequency: salaryFrequencyEnum('salaryFrequency'),
+  closingDate: date('closing_date').notNull(),
+  salaryType: salaryTypeEnum('salary_type').notNull(),
+  salaryFrequency: salaryFrequencyEnum('salary_frequency'),
   salary: numeric('salary', { precision: 10, scale: 2 }),
   benefits: text('benefits'),
   requirements: text('requirements').notNull(),
@@ -84,9 +84,9 @@ export const opportunities = pgTable('opportunities', {
   language: languageEnum('language').array().notNull(),
   gender: genderEnum('gender').array().notNull(),
   race: raceEnum('race').array().notNull(),
-  minAge: integer('minAge'),
-  maxAge: integer('maxAge'),
-  address: serial('addressId').references(() => addresses.id, {
+  minAge: integer('min_age'),
+  maxAge: integer('max_age'),
+  address: serial('address_id').references(() => addresses.id, {
     onDelete: 'restrict',
   }),
 });
