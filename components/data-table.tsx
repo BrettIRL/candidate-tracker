@@ -15,6 +15,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import { DataTablePagination } from '@/components/data-table-pagination';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import {
   Table,
   TableBody,
@@ -27,11 +29,13 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterColumn: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filterColumn,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -62,6 +66,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      <DataTableToolbar table={table} filterColumn={filterColumn} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -110,6 +115,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }
