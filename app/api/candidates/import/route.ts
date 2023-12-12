@@ -21,8 +21,8 @@ async function fetchOpportunityCandidates(opportunityId: string) {
   );
 }
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
   const opportunityId = searchParams.get('opportunityId');
 
   if (!opportunityId) {
@@ -62,6 +62,10 @@ export async function GET(request: NextRequest) {
           meetsEducation: !!applicant.requirements.meets_education,
           meetsLanguage: !!applicant.requirements.meets_language,
           distance: applicant.requirements.distance_from_opportunity,
+          step: +(
+            applicant.requirements.meets_minimum_requirements === 'Meets all' &&
+            +applicant.requirements.distance_from_opportunity <= 20
+          ),
         };
 
         return {

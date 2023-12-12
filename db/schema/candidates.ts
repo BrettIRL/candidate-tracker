@@ -55,7 +55,7 @@ export const opportunitiesToCandidates = pgTable(
     meetsEducation: boolean('meets_education').notNull(),
     meetsLanguage: boolean('meets_language').notNull(),
     distance: text('distance').notNull(),
-    step: integer('step').notNull().default(1),
+    step: integer('step').notNull().default(0),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
@@ -87,5 +87,5 @@ export type NewOpportunityToCandidate =
   typeof opportunitiesToCandidates.$inferInsert;
 export type OpportunityToCandidateCriteria = Omit<
   NewOpportunityToCandidate,
-  'opportunityId' | 'candidateId' | 'step' | 'createdAt' | 'updatedAt'
+  'opportunityId' | 'candidateId' | 'createdAt' | 'updatedAt'
 >;

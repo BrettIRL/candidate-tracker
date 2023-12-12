@@ -1,6 +1,7 @@
 export type SAYApplicant = {
   rank: number;
   requirements: {
+    meets_minimum_requirements: string;
     meets_age: number;
     meets_gender: number;
     meets_race: number;
