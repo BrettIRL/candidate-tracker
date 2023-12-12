@@ -186,3 +186,9 @@ export function resolveContactDuration(duration: number): SAYContractDuration {
     return SAYContractDuration.TwentyFourMonths;
   }
 }
+
+export const candidateSteps: Record<number, string> = {
+  0: 'Imported',
+  1: 'Assessment',
+  2: 'Passed',
+};

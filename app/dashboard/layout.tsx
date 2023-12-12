@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }: DashboardProps) {
         <aside className="hidden w-[200px] flex-col py-6 md:flex">
           <SidebarNav items={DashboardSidebarNav} />
         </aside>
-        <main className="flex w-full flex-1 flex-col overflow-hidden py-6">
+        <main className="flex w-full flex-1 flex-col overflow-hidden px-1 py-6">
           {children}
         </main>
       </div>
