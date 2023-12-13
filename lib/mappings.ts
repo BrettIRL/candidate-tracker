@@ -191,4 +191,5 @@ export const candidateSteps: Record<number, string> = {
   0: 'Imported',
   1: 'Assessment',
   2: 'Passed',
+  3: 'Shortlist',
 };

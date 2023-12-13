@@ -140,13 +140,13 @@ export const columns: ColumnDef<{
     ),
   },
   {
-    accessorKey: 'mark',
-    accessorFn: row => '69/100 (69%)',
+    accessorKey: 'assessment',
+    accessorFn: () => 'Incomplete',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Mark" />
+      <DataTableColumnHeader column={column} title="Assessment" />
     ),
     cell: ({ row }) => (
-      <div className="flex space-x-2">{row.getValue('mark')}</div>
+      <div className="flex space-x-2">{row.getValue('assessment')}</div>
     ),
   },
   {

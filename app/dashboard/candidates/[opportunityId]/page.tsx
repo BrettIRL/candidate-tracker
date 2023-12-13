@@ -33,7 +33,7 @@ export default function OpportunityCandidates({
     let columns = {};
     switch (step) {
       case 0:
-        columns = { mark: false, step: false };
+        columns = { assessment: false, step: false };
         break;
       case 1:
         columns = {
