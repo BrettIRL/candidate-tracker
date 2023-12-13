@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { opportunities } from '../schema/opportunities';
 import type {
   Candidate,
@@ -62,4 +62,20 @@ export async function linkCandidatesToOpportunity(
         opportunitiesToCandidates.candidateId,
       ],
     });
+}
+
+export async function changeStep(
+  candidateId: number,
+  opportunityId: number,
+  step: number,
+) {
+  return db
+    .update(opportunitiesToCandidates)
+    .set({ step })
+    .where(
+      and(
+        eq(opportunitiesToCandidates.candidateId, candidateId),
+        eq(opportunitiesToCandidates.opportunityId, opportunityId),
+      ),
+    );
 }
