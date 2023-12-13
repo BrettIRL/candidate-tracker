@@ -7,32 +7,7 @@ import { CandidateStepSelector } from '@/components/candidate-step-selector';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { DataTable } from '@/components/data-table';
 import { CandidateImportButton } from '@/components/ui/candidate-import-button';
-import { toast } from '@/components/ui/use-toast';
-import { JoinedCandidateOpportunity } from '@/ts/types';
-
-async function fetchCandidatesForOpportunity(
-  opportunityId: string,
-): Promise<{ [step: number]: JoinedCandidateOpportunity[] }> {
-  try {
-    const response = await fetch(`/api/candidates/${opportunityId}`);
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch candidates. Status: ${response.status}. ${result.message}`,
-      );
-    }
-
-    return result.data;
-  } catch (error) {
-    toast({
-      title: 'Error fetching candidates',
-      description: 'Error fetching candidates. Please try again.',
-      variant: 'destructive',
-    });
-    return { 0: [] };
-  }
-}
+import { useCandidateContext } from '@/contexts/CandidateContext';
 
 interface OpportunityCandidatesProps {
   params: {
@@ -48,18 +23,11 @@ export default function OpportunityCandidates({
     mark: false,
     step: false,
   });
-  const [data, setData] = useState<{
-    [step: number]: JoinedCandidateOpportunity[];
-  }>({ 0: [] });
+  const candidateContext = useCandidateContext();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchCandidatesForOpportunity(params.opportunityId);
-
-      setData(data);
-    };
-    fetchData();
-  }, [params.opportunityId]);
+    candidateContext?.refresh(params.opportunityId);
+  }, [params.opportunityId, candidateContext]);
 
   const handleStepChange = (step: number) => {
     let columns = {};
@@ -85,14 +53,16 @@ export default function OpportunityCandidates({
       <DashboardHeader
         heading="Candidates"
         text={
-          data[0].length ? data[0][0].opportunities.title : 'Manage Candidates'
+          candidateContext.data[0]?.length
+            ? candidateContext.data[0][0].opportunities.title
+            : 'Manage Candidates'
         }
       >
         <CandidateImportButton opportunityId={params.opportunityId} />
       </DashboardHeader>
       <CandidateStepSelector onStepChange={handleStepChange} />
       <DataTable
-        data={data[step] || []}
+        data={candidateContext.data[step] || []}
         columns={columns}
         initialState={{ columnVisibility: visibleColumns }}
         filterColumn="name"

@@ -1,6 +1,7 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
+import { DataTableRowActions } from './actions';
 import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { RequirementsHoverCard } from '@/components/requirements-hover-card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -146,6 +147,14 @@ export const columns: ColumnDef<{
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">{row.getValue('mark')}</div>
+    ),
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <DataTableRowActions row={row} />
+      </div>
     ),
   },
 ];
