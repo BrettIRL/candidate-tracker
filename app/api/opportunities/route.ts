@@ -109,6 +109,9 @@ export async function POST(req: Request) {
     return NextResponse.json(opportunity, { status: 201 });
   } catch (error) {
     logger.error(error);
-    return NextResponse.json('Error creating opportunity', { status: 422 });
+    return NextResponse.json(
+      { message: 'Error creating opportunity' },
+      { status: 422 },
+    );
   }
 }
