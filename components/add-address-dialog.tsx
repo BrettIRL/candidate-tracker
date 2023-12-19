@@ -38,15 +38,15 @@ async function addAddress(data: NewAddress) {
     if (!response.ok) {
       const error: { message: string } = await response.json();
       throw new Error(
-        `Failed to update user. Status: ${response.status}. ${error.message}`,
+        `Failed to create address. Status: ${response.status}. ${error.message}`,
       );
     }
 
     return true;
   } catch (error) {
     toast({
-      title: 'Error Updating User',
-      description: 'User was not updated. Please try again.',
+      title: 'Error Creating Address',
+      description: 'Address was not created. Please try again.',
       variant: 'destructive',
     });
     return false;

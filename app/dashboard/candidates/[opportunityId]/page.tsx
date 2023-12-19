@@ -15,7 +15,7 @@ interface OpportunityCandidatesProps {
   };
 }
 
-export default function OpportunityCandidates({
+export default function OpportunityCandidatesPage({
   params,
 }: OpportunityCandidatesProps) {
   const [step, setStep] = useState<number>(0);
