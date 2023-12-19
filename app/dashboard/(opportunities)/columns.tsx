@@ -80,7 +80,7 @@ export const columns: ColumnDef<Opportunity>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row, table }) => (
+    cell: ({ row }) => (
       <div className="flex justify-end">
         <DataTableRowActions row={row} />
       </div>

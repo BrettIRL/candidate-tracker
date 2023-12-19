@@ -4,7 +4,7 @@ import { DashboardHeader } from '@/components/dashboard-header';
 import { DataTable } from '@/components/data-table';
 import { getAddresses } from '@/db/repositories/addresses';
 
-export default async function Addresses() {
+export default async function AddressesPage() {
   const addresses = (await getAddresses()) || [];
 
   return (

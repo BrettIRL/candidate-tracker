@@ -3,6 +3,7 @@ import type { MainNavItem, SidebarNavItem } from '@/ts/types';
 export const DashboardMainNav: MainNavItem[] = [
   { title: 'Opportunities', href: '/dashboard' },
   { title: 'Candidates', href: '/dashboard/candidates' },
+  { title: 'Assessment', href: '/dashboard/assessment' },
   { title: 'Users', href: '/dashboard/users' },
   { title: 'Settings', href: '/dashboard/settings' },
 ];
@@ -32,6 +33,19 @@ export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
       title: 'Ex-Ambassadors',
       href: '/dashboard/candidates/former',
       icon: 'userX',
+    },
+  ],
+  '/dashboard/assessment': [
+    { title: 'Questions', href: '/dashboard/assessment', icon: 'question' },
+    {
+      title: 'Create Question',
+      href: '/dashboard/assessment/create',
+      icon: 'filePlus',
+    },
+    {
+      title: 'Categories',
+      href: '/dashboard/assessment/categories',
+      icon: 'folderClosed',
     },
   ],
   '/dashboard/users': [

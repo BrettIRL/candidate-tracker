@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { changeStep } from '@/db/repositories/candidates';
 import { logger } from '@/lib/logger';
 
-export async function PATCH(request: Request) {
-  const { candidateId, opportunityId, step } = await request.json();
+export async function PATCH(req: Request) {
+  const { candidateId, opportunityId, step } = await req.json();
 
   if (!candidateId || !opportunityId || step === undefined) {
     return NextResponse.json(
