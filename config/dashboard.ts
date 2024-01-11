@@ -5,7 +5,7 @@ export const DashboardMainNav: MainNavItem[] = [
   { title: 'Candidates', href: '/dashboard/candidates' },
   { title: 'Assessment', href: '/dashboard/assessment' },
   { title: 'Users', href: '/dashboard/users' },
-  { title: 'Settings', href: '/dashboard/settings' },
+  { title: 'Settings', href: '/dashboard/settings/messages' },
 ];
 
 export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
@@ -53,11 +53,6 @@ export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
     { title: 'Add User', href: '/dashboard/users/create', icon: 'userPlus' },
   ],
   '/dashboard/settings': [
-    {
-      title: 'Assessment',
-      href: '/dashboard/settings/assement',
-      icon: 'flask',
-    },
     {
       title: 'Messages',
       href: '/dashboard/settings/messages',
