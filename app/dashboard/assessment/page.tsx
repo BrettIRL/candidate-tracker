@@ -9,7 +9,12 @@ export default async function AssessmentsPage() {
   return (
     <div className="grid items-start gap-8">
       <DashboardHeader heading="Questions" text="Manage Assessment Questions" />
-      <DataTable data={questions} columns={columns} filterColumn="question" />
+      <DataTable
+        data={questions}
+        columns={columns}
+        facetFilters={['category']}
+        filterColumn="question"
+      />
     </div>
   );
 }

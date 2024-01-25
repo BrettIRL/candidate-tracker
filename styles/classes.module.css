@@ -1,0 +1,16 @@
+.question p {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+.question strong {
+  @apply text-foreground;
+}
+
+.page p {
+  @apply mb-4;
+}
+
+.matchPopoverWidthToTrigger {
+  width: var(--radix-popover-trigger-width);
+  max-height: var(--radix-popover-content-available-height);
+}

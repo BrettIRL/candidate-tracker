@@ -4,9 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Checkbox } from './ui/checkbox';
-import { Input } from './ui/input';
-import { toast } from './ui/use-toast';
 import { CategorySelector } from '@/components/category-selector';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -19,8 +16,11 @@ import {
   FormField,
   FormItem,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { toast } from '@/components/ui/use-toast';
 import {
   addQuestionSchema,
   type QuestionValues,
@@ -63,8 +63,8 @@ export function AddQuestionForm() {
     defaultValues: {
       question: '',
       category: undefined,
-      multipleAnswers: false,
-      answers: [{ answer: '', correct: false }],
+      preScreening: false,
+      answers: [{ answer: '', weight: undefined }],
     },
     mode: 'onChange',
   });
@@ -98,7 +98,11 @@ export function AddQuestionForm() {
             <FormItem>
               <FormLabel>Question</FormLabel>
               <FormControl>
-                <Input disabled={isLoading} {...field} />
+                <RichTextEditor
+                  initialValue={field.value}
+                  onChange={field.onChange}
+                  readonly={isLoading}
+                />
               </FormControl>
             </FormItem>
           )}
@@ -119,13 +123,13 @@ export function AddQuestionForm() {
         />
         <FormField
           control={form.control}
-          name="multipleAnswers"
+          name="preScreening"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel>Multiple Answers</FormLabel>
+                <FormLabel>Pre-Screening</FormLabel>
                 <FormDescription>
-                  Allow users to select multiple answers
+                  Pre-Screening questions are displayed before the assessment
                 </FormDescription>
               </div>
               <FormControl>
@@ -142,27 +146,35 @@ export function AddQuestionForm() {
         {answers.fields.map((field, index) => (
           <div key={field.id} className="flex w-full space-x-2">
             <FormField
-              name={`answers.${index}.correct`}
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="flex max-h-9 w-9 items-center justify-center rounded-md border">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
               name={`answers.${index}.answer`}
               control={form.control}
               render={({ field }) => (
                 <FormItem className="grow">
                   <FormControl>
-                    <Input disabled={isLoading} {...field} />
+                    <Input
+                      placeholder="Answer"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name={`answers.${index}.weight`}
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="w-24">
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      placeholder="Weight"
+                      disabled={isLoading}
+                      {...field}
+                      onChange={e => field.onChange(parseFloat(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,7 +197,7 @@ export function AddQuestionForm() {
             type="button"
             size="sm"
             variant="outline"
-            onClick={() => answers.append({ answer: '', correct: false })}
+            onClick={() => answers.append({ answer: '', weight: 0 })}
           >
             <Icons.plus className="h-4 w-4" />
             Add Answer

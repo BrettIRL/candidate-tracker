@@ -1,5 +1,6 @@
 import { Icons } from '@/components/icons';
 
+export * from '@/ts/types/assessment';
 export * from '@/ts/types/candidate';
 export * from '@/ts/types/opportunity';
 

@@ -1,7 +1,7 @@
 import type { Row } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components//ui/button';
 import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
