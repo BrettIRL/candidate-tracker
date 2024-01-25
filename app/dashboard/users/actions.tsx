@@ -1,11 +1,11 @@
 import type { Row } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from '@/components//ui/button';
 import { DeleteAlertDialog } from '@/components/delete-alert-dialog';
 import { EditUserDialog } from '@/components/edit-user-dialog';
 import { Icons } from '@/components/icons';
 import { PasswordResetDialog } from '@/components/password-reset-dialog';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,

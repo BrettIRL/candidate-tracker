@@ -3,15 +3,6 @@ import { MessageInput } from '@/components/message-input';
 import { Separator } from '@/components/ui/separator';
 import { getSettings } from '@/db/repositories/settings';
 
-interface Test {
-  name: string;
-  value: string;
-}
-
-type Tester = {
-  name: string;
-};
-
 export default async function MessageSettingsPage() {
   const settings = (await getSettings()) || {};
 

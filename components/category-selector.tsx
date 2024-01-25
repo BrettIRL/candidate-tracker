@@ -1,6 +1,20 @@
 import { useEffect, useState } from 'react';
 import { toast } from './ui/use-toast';
+import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command';
 import { FormControl } from '@/components/ui/form';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   Select,
   SelectTrigger,
@@ -9,6 +23,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { Category } from '@/db/schema/assessment';
+import { cn } from '@/lib/utils';
+import styles from '@/styles/classes.module.css';
 
 async function fetchCategories(): Promise<Category[]> {
   try {
@@ -46,6 +62,7 @@ export function CategorySelector({
   disabled,
 }: CategorySelectorProps) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -59,23 +76,51 @@ export function CategorySelector({
   }, []);
 
   return (
-    <Select
-      onValueChange={categoryId => onChange(+categoryId)}
-      defaultValue={defaultValue?.toString()}
-      disabled={isLoading || disabled}
-    >
-      <FormControl>
-        <SelectTrigger>
-          <SelectValue placeholder="Select a category" />
-        </SelectTrigger>
-      </FormControl>
-      <SelectContent>
-        {categories.map(category => (
-          <SelectItem key={category.id} value={category.id.toString()}>
-            {category.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+      <PopoverTrigger asChild>
+        <FormControl>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              'w-full justify-between',
+              !defaultValue && 'text-muted-foreground',
+            )}
+            disabled={isLoading || disabled}
+          >
+            {defaultValue
+              ? categories.find(cat => cat.id === defaultValue)?.name
+              : 'Select Category'}
+            <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </FormControl>
+      </PopoverTrigger>
+      <PopoverContent className={cn('p-0', styles.matchPopoverWidthToTrigger)}>
+        <Command>
+          <CommandInput placeholder="Search language..." />
+          <CommandEmpty>No category found.</CommandEmpty>
+          <CommandGroup>
+            {categories.map(category => (
+              <CommandItem
+                value={category.name}
+                key={category.id}
+                onSelect={() => {
+                  onChange(category.id);
+                  setPopoverOpen(false);
+                }}
+              >
+                <Icons.check
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    category.id === defaultValue ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
+                {category.name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

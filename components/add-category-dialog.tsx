@@ -78,6 +78,7 @@ export function AddCategoryDialog({
 
     if (created) {
       router.refresh();
+      form.reset();
       onOpenChange(false);
     }
 

@@ -36,6 +36,7 @@ interface DataTableProps<TData, TValue> {
     rowSelection?: RowSelectionState;
     columnFilters?: ColumnFiltersState;
   };
+  facetFilters?: string[];
   filterColumn: string;
   visibleColumns?: VisibilityState;
 }
@@ -44,6 +45,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   initialState,
+  facetFilters,
   filterColumn,
   visibleColumns,
 }: DataTableProps<TData, TValue>) {
@@ -82,7 +84,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} filterColumn={filterColumn} />
+      <DataTableToolbar
+        table={table}
+        facetFilters={facetFilters}
+        filterColumn={filterColumn}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
