@@ -40,6 +40,9 @@ export const columns: ColumnDef<
         <span className="truncate font-medium">{row.getValue('category')}</span>
       </div>
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue('category'));
+    },
   },
   {
     accessorKey: 'question',
