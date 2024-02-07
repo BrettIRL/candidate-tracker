@@ -5,6 +5,7 @@ export const addQuestionSchema = z
     category: z.number({ required_error: 'Category is required' }),
     question: z.string().min(1, 'Question is required'),
     multipleAnswers: z.boolean(),
+    preScreening: z.boolean(),
     answers: z
       .array(
         z.object({

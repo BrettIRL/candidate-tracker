@@ -42,6 +42,7 @@ export async function getQuestions() {
       id: questions.id,
       question: questions.question,
       category: categories.name,
+      preScreening: questions.preScreening,
       multipleAnswers: questions.multipleAnswers,
     })
     .from(questions)

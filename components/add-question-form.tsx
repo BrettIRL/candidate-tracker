@@ -64,6 +64,7 @@ export function AddQuestionForm() {
     defaultValues: {
       question: '',
       category: undefined,
+      preScreening: false,
       multipleAnswers: false,
       answers: [{ answer: '', correct: false }],
     },
@@ -119,6 +120,27 @@ export function AddQuestionForm() {
                 onChange={field.onChange}
                 disabled={isLoading}
               />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="preScreening"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel>Pre-Screening</FormLabel>
+                <FormDescription>
+                  Pre-Screening questions are displayed before the assessment
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isLoading}
+                />
+              </FormControl>
             </FormItem>
           )}
         />

@@ -2,16 +2,17 @@ import { boolean, text, serial, pgTable } from 'drizzle-orm/pg-core';
 
 export const questions = pgTable('assessment_questions', {
   id: serial('id').primaryKey(),
-  category: serial('categoryId')
+  category: serial('category_id')
     .notNull()
     .references(() => categories.id),
   question: text('question').notNull(),
+  preScreening: boolean('pre_screening').notNull(),
   multipleAnswers: boolean('multiple_answers').notNull(),
 });
 
 export const answers = pgTable('assessment_answers', {
   id: serial('id').primaryKey(),
-  questionId: serial('questionId')
+  questionId: serial('question_id')
     .notNull()
     .references(() => questions.id),
   answer: text('answer').notNull(),
