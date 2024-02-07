@@ -4,12 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Checkbox } from './ui/checkbox';
-import { Input } from './ui/input';
-import { toast } from './ui/use-toast';
 import { CategorySelector } from '@/components/category-selector';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -19,8 +17,11 @@ import {
   FormField,
   FormItem,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { toast } from '@/components/ui/use-toast';
 import {
   addQuestionSchema,
   type QuestionValues,
@@ -98,7 +99,11 @@ export function AddQuestionForm() {
             <FormItem>
               <FormLabel>Question</FormLabel>
               <FormControl>
-                <Input disabled={isLoading} {...field} />
+                <RichTextEditor
+                  initialValue={field.value}
+                  onChange={field.onChange}
+                  readonly={isLoading}
+                />
               </FormControl>
             </FormItem>
           )}
