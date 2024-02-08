@@ -86,10 +86,11 @@ export function CategorySelector({
               'w-full justify-between',
               !defaultValue && 'text-muted-foreground',
             )}
+            disabled={isLoading || disabled}
           >
             {defaultValue
               ? categories.find(cat => cat.id === defaultValue)?.name
-              : 'Select language'}
+              : 'Select Category'}
             <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </FormControl>
@@ -97,7 +98,7 @@ export function CategorySelector({
       <PopoverContent className={cn('p-0', styles.matchPopoverWidthToTrigger)}>
         <Command>
           <CommandInput placeholder="Search language..." />
-          <CommandEmpty>No language found.</CommandEmpty>
+          <CommandEmpty>No category found.</CommandEmpty>
           <CommandGroup>
             {categories.map(category => (
               <CommandItem
