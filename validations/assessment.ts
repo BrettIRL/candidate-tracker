@@ -4,22 +4,21 @@ export const addQuestionSchema = z
   .object({
     category: z.number({ required_error: 'Category is required' }),
     question: z.string().min(1, 'Question is required'),
-    multipleAnswers: z.boolean(),
     preScreening: z.boolean(),
     answers: z
       .array(
         z.object({
           answer: z.string().min(1, 'Answer is required'),
-          correct: z.boolean(),
+          weight: z.number({ required_error: 'Weight is required' }).min(0),
         }),
       )
       .min(1, 'At least one answer is required'),
   })
   .superRefine((fields, ctx) => {
-    if (fields.answers.filter(answer => answer.correct).length < 1) {
+    if (fields.answers.filter(answer => answer.weight > 0).length < 1) {
       ctx.addIssue({
         code: 'custom',
-        message: 'At least one correct answer is required',
+        message: 'At least one answer needs a weight greater than 0',
         path: ['answers.root'],
       });
     }

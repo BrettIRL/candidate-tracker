@@ -7,7 +7,6 @@ export const questions = pgTable('assessment_questions', {
     .references(() => categories.id),
   question: text('question').notNull(),
   preScreening: boolean('pre_screening').notNull(),
-  multipleAnswers: boolean('multiple_answers').notNull(),
 });
 
 export const answers = pgTable('assessment_answers', {
@@ -16,7 +15,7 @@ export const answers = pgTable('assessment_answers', {
     .notNull()
     .references(() => questions.id),
   answer: text('answer').notNull(),
-  correct: boolean('is_correct').notNull(),
+  weight: real('weight').notNull().default(0),
 });
 
 export const categories = pgTable('assessment_categories', {

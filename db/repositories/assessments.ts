@@ -43,7 +43,6 @@ export async function getQuestions() {
       question: questions.question,
       category: categories.name,
       preScreening: questions.preScreening,
-      multipleAnswers: questions.multipleAnswers,
     })
     .from(questions)
     .innerJoin(categories, eq(questions.category, categories.id));

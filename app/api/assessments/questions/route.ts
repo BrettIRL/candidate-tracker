@@ -10,7 +10,6 @@ export async function POST(req: Request) {
         question: data.question,
         category: data.category,
         preScreening: data.preScreening,
-        multipleAnswers: data.multipleAnswers,
       },
       data.answers,
     );
