@@ -1,4 +1,5 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
+import { opportunitiesToCandidates } from '../schema/candidates';
 import {
   type NewCategory,
   categories,
@@ -6,6 +7,8 @@ import {
   answers,
   type NewAnswer,
   type NewQuestion,
+  type NewUserAnswer,
+  userAnswers,
 } from '@/db/schema/assessment';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
@@ -48,6 +51,48 @@ export async function getQuestions() {
     .innerJoin(categories, eq(questions.category, categories.id));
 }
 
+export async function getQuestionsAndAnswers() {
+  return db
+    .select({
+      id: questions.id,
+      question: questions.question,
+      category: categories.name,
+      answers: sql`array_agg(json_build_object('id', ${answers.id}, 'answer', ${answers.answer}, 'answer', ${answers.answer}, 'weight', ${answers.weight}))`,
+    })
+    .from(questions)
+    .innerJoin(categories, eq(questions.category, categories.id))
+    .innerJoin(answers, eq(answers.questionId, questions.id))
+    .where(eq(questions.preScreening, false))
+    .groupBy(questions.id, categories.name);
+}
+
+export async function getPrescreeningQuestions() {
+  return db
+    .select({
+      id: questions.id,
+      question: questions.question,
+      category: categories.name,
+      answers: sql`array_agg(json_build_object('id', ${answers.id}, 'answer', ${answers.answer}, 'answer', ${answers.answer}, 'weight', ${answers.weight}))`,
+    })
+    .from(questions)
+    .innerJoin(categories, eq(questions.category, categories.id))
+    .innerJoin(answers, eq(answers.questionId, questions.id))
+    .where(eq(questions.preScreening, true))
+    .groupBy(questions.id, categories.name);
+}
+
+export async function getQuestionsById(questionIds: number[]) {
+  return db
+    .select({
+      id: questions.id,
+      answers: sql`array_agg(json_build_object('id', ${answers.id}, 'weight', ${answers.weight}))`,
+    })
+    .from(questions)
+    .innerJoin(answers, eq(answers.questionId, questions.id))
+    .where(inArray(questions.id, questionIds))
+    .groupBy(questions.id);
+}
+
 export async function insertQuestion(
   assessmentQuestion: NewQuestion,
   assessmentAnswers: NewAnswer[],
@@ -76,4 +121,55 @@ export async function insertQuestion(
       return {};
     }
   });
+}
+
+export async function insertAnswersWithTransaction(
+  candidateId: number,
+  opportunityId: number,
+  answers: NewUserAnswer[],
+  prescreeningMark?: number,
+  assessmentMark?: number,
+) {
+  if (!prescreeningMark && !assessmentMark) {
+    throw new Error(
+      'One of prescreeningMark or assessmentMark must be provided',
+    );
+  }
+  const mark = prescreeningMark ? { prescreeningMark } : { assessmentMark };
+
+  return db.transaction(async tx => {
+    try {
+      await tx
+        .update(opportunitiesToCandidates)
+        .set(mark)
+        .where(
+          and(
+            eq(opportunitiesToCandidates.candidateId, candidateId),
+            eq(opportunitiesToCandidates.opportunityId, opportunityId),
+          ),
+        );
+
+      await tx.insert(userAnswers).values(answers);
+    } catch (error) {
+      logger.error(error);
+      tx.rollback();
+      throw error;
+    }
+  });
+}
+
+export async function insertAssessmentMark(
+  candidateId: number,
+  opportunityId: number,
+  assessmentMark: number,
+) {
+  return db
+    .update(opportunitiesToCandidates)
+    .set({ assessmentMark })
+    .where(
+      and(
+        eq(opportunitiesToCandidates.candidateId, candidateId),
+        eq(opportunitiesToCandidates.opportunityId, opportunityId),
+      ),
+    );
 }

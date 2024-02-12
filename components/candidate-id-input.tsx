@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Icons } from '@/components/icons';
@@ -14,32 +13,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from '@/components/ui/use-toast';
-
-async function getCandidate(idNumber: string, opportunityId: string) {
-  try {
-    const response = await fetch(
-      `/api/candidates/${opportunityId}/${idNumber}`,
-    );
-
-    if (!response.ok) {
-      const error: { message: string } = await response.json();
-      throw new Error(
-        `Failed to retrieve candidate for opportunity. Status: ${response.status}. ${error.message}`,
-      );
-    }
-
-    return await response.json();
-  } catch (error) {
-    toast({
-      title: 'Error Finding Candidate',
-      description:
-        'Could not find candidate with that ID number for that opportunity.',
-      variant: 'destructive',
-    });
-    return undefined;
-  }
-}
 
 const idSchema = z.object({
   idNumber: z.string().regex(/^\d{13}$/, 'Please enter a valid ID number'),
@@ -48,16 +21,14 @@ const idSchema = z.object({
 type IdFormData = z.infer<typeof idSchema>;
 
 interface CandidateIdInputProps {
-  opportunityId: string;
+  isLoading: boolean;
   onChange: (candidateId: string) => void;
 }
 
 export function CandidateIdInput({
-  opportunityId,
+  isLoading,
   onChange,
 }: CandidateIdInputProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const {
     register,
     handleSubmit,
@@ -65,14 +36,7 @@ export function CandidateIdInput({
   } = useForm<IdFormData>({ resolver: zodResolver(idSchema) });
 
   const onSubmit = async (data: IdFormData) => {
-    setIsLoading(true);
-
-    const candidate = await getCandidate(data.idNumber, opportunityId);
-
-    if (candidate) {
-      onChange(candidate.candidateId);
-    }
-    setIsLoading(false);
+    onChange(data.idNumber);
   };
 
   return (

@@ -48,6 +48,25 @@ export async function getOpportunityCandidateByIdNumber(
     .where(eq(candidates.idNumber, idNumber));
 }
 
+export async function getOpportunityCandidateById(
+  candidateId: number,
+  opportunityId: number,
+) {
+  return db
+    .select()
+    .from(opportunitiesToCandidates)
+    .innerJoin(
+      candidates,
+      eq(opportunitiesToCandidates.candidateId, candidates.id),
+    )
+    .where(
+      and(
+        eq(opportunitiesToCandidates.candidateId, candidateId),
+        eq(opportunitiesToCandidates.opportunityId, opportunityId),
+      ),
+    );
+}
+
 export async function createOrUpdateCandidates(newCandidates: NewCandidate[]) {
   return db
     .insert(candidates)
