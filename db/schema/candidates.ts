@@ -55,6 +55,8 @@ export const opportunitiesToCandidates = pgTable(
     meetsEducation: boolean('meets_education').notNull(),
     meetsLanguage: boolean('meets_language').notNull(),
     distance: text('distance').notNull(),
+    prescreeningMark: integer('prescreening_mark'),
+    assessmentMark: integer('assessment_mark'),
     step: integer('step').notNull().default(0),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
