@@ -54,6 +54,11 @@ export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
   ],
   '/dashboard/settings': [
     {
+      title: 'Assessment',
+      href: '/dashboard/settings/assessment',
+      icon: 'question',
+    },
+    {
       title: 'Messages',
       href: '/dashboard/settings/messages',
       icon: 'message',
