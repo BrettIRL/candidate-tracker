@@ -10,8 +10,8 @@ export function AssessmentQuestionsSkeleton() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-2 md:grid-cols-2">
-          {[...Array(4)].map(el => (
-            <Skeleton key={el} className="h-8" />
+          {[...Array(4)].map((_, idx) => (
+            <Skeleton key={idx} className="h-8" />
           ))}
         </div>
       </CardContent>
