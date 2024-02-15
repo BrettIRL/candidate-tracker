@@ -60,6 +60,12 @@ export function CandidateAssessment({
       }
       setIsFetching(false);
     })();
+
+    return () => {
+      setAllQuestions({});
+      setCategories([]);
+      setQuestions([]);
+    };
   }, []);
 
   const allQuestionsAnswered = useMemo(() => {
