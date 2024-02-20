@@ -46,7 +46,6 @@ import {
   Users,
   UserCheck,
   UserPlus,
-  UserX,
   X,
   XCircle,
   LucideProps,
@@ -102,7 +101,6 @@ export const Icons = {
   users: Users,
   userCheck: UserCheck,
   userPlus: UserPlus,
-  userX: UserX,
   spinner: ({ ...props }: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"

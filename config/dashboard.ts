@@ -26,13 +26,8 @@ export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
     { title: 'Candidates', href: '/dashboard/candidates', icon: 'users' },
     {
       title: 'Ambassadors',
-      href: '/dashboard/candidates/employed',
+      href: '/dashboard/candidates/ambassadors',
       icon: 'userCheck',
-    },
-    {
-      title: 'Ex-Ambassadors',
-      href: '/dashboard/candidates/former',
-      icon: 'userX',
     },
   ],
   '/dashboard/assessment': [

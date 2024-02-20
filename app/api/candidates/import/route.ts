@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getAmbassadorsByIdNumbers } from '@/db/repositories/ambassadors';
 import {
   createOrUpdateCandidates,
   linkCandidatesToOpportunity,
@@ -7,6 +8,8 @@ import { getOpportunityById } from '@/db/repositories/opportunities';
 import type { OpportunityToCandidateCriteria } from '@/db/schema/candidates';
 import { logger } from '@/lib/logger';
 import type { SAYApplicant } from '@/ts/types/applicants';
+
+const BATCH_SIZE = 50;
 
 async function fetchOpportunityCandidates(opportunityId: string) {
   return fetch(
@@ -19,6 +22,28 @@ async function fetchOpportunityCandidates(opportunityId: string) {
       },
     },
   );
+}
+
+async function filterAmbassadors(
+  applicants: SAYApplicant[],
+): Promise<SAYApplicant[]> {
+  const filteredApplicants = [];
+
+  for (let i = 0; i < applicants.length; i += BATCH_SIZE) {
+    const batch = applicants.slice(i, i + BATCH_SIZE);
+    const idNumbers = batch.map(
+      applicant => applicant.personal_details.id_number,
+    );
+    const ambassadorsIds = await getAmbassadorsByIdNumbers(idNumbers);
+
+    filteredApplicants.push(
+      ...batch.filter(
+        applicant => !ambassadorsIds.has(applicant.personal_details.id_number),
+      ),
+    );
+  }
+
+  return filteredApplicants;
 }
 
 export async function GET(req: NextRequest) {
@@ -47,8 +72,10 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const filteredApplicants = await filterAmbassadors(data.applicants);
+
     const criteria: { [key: string]: OpportunityToCandidateCriteria } = {};
-    const applicants = data.applicants
+    const applicants = filteredApplicants
       .filter(
         (applicant: SAYApplicant) => !!applicant.personal_details.id_number,
       )
@@ -99,7 +126,7 @@ export async function GET(req: NextRequest) {
 
     await linkCandidatesToOpportunity(candidatesToLink);
 
-    return NextResponse.json({ imported: 69 });
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     logger.error(error);
     return NextResponse.json({
