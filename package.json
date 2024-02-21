@@ -34,6 +34,7 @@
     "@tiptap/pm": "^2.1.12",
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
+    "africastalking": "^0.6.6",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -55,6 +56,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/africastalking": "^0.6.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.8.10",
     "@types/react": "^18.2.36",
