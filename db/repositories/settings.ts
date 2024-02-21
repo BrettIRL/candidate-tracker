@@ -10,6 +10,14 @@ export async function getSettings() {
   }, {});
 }
 
+export async function getSetting(name: string) {
+  const setting = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.name, name));
+  return setting[0]?.value || undefined;
+}
+
 export async function updateSetting(name: string, value: string) {
   return db.update(settings).set({ value }).where(eq(settings.name, name));
 }

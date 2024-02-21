@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAmbassadorsByIdNumbers } from '@/db/repositories/ambassadors';
 import {
   createOrUpdateCandidates,
+  getCandidatesForAssessmentSMS,
   linkCandidatesToOpportunity,
+  updateOpportunityCandidates,
 } from '@/db/repositories/candidates';
 import { getOpportunityById } from '@/db/repositories/opportunities';
+import { getSetting } from '@/db/repositories/settings';
 import type { OpportunityToCandidateCriteria } from '@/db/schema/candidates';
 import { logger } from '@/lib/logger';
+import { sendSMS } from '@/lib/sms';
+import { SMSTemplate } from '@/ts/enums';
 import type { SAYApplicant } from '@/ts/types/applicants';
 
 const BATCH_SIZE = 50;
@@ -22,6 +27,34 @@ async function fetchOpportunityCandidates(opportunityId: string) {
       },
     },
   );
+}
+
+async function sendAssessmentSMS(opportunityId: number) {
+  try {
+    const candidatesToSMS = await getCandidatesForAssessmentSMS(opportunityId);
+    const template = await getSetting(SMSTemplate.Assessment);
+
+    if (!candidatesToSMS.length || !template) {
+      return;
+    }
+
+    candidatesToSMS.forEach(candidate => {
+      sendSMS(candidate.candidates.phone, template, {
+        name: candidate.candidates.firstName,
+        // TODO: generate full link
+        link: `${opportunityId}`,
+      });
+    });
+
+    const candidateIds = candidatesToSMS.map(
+      candidate => candidate.candidates.id,
+    );
+    await updateOpportunityCandidates(candidateIds, opportunityId, {
+      assessmentSMSSentAt: new Date(),
+    });
+  } catch (error) {
+    logger.error(error);
+  }
 }
 
 async function filterAmbassadors(
@@ -74,12 +107,18 @@ export async function GET(req: NextRequest) {
 
     const filteredApplicants = await filterAmbassadors(data.applicants);
 
+    const smsList: SAYApplicant[] = [];
     const criteria: { [key: string]: OpportunityToCandidateCriteria } = {};
     const applicants = filteredApplicants
       .filter(
         (applicant: SAYApplicant) => !!applicant.personal_details.id_number,
       )
       .map((applicant: SAYApplicant) => {
+        const step = Number(
+          applicant.requirements.meets_minimum_requirements === 'Meets all' &&
+            +applicant.requirements.distance_from_opportunity <= 20,
+        );
+
         criteria[applicant.personal_details.id_number] = {
           saYouthRank: applicant.rank,
           meetsAge: !!applicant.requirements.meets_age,
@@ -89,11 +128,12 @@ export async function GET(req: NextRequest) {
           meetsEducation: !!applicant.requirements.meets_education,
           meetsLanguage: !!applicant.requirements.meets_language,
           distance: applicant.requirements.distance_from_opportunity,
-          step: +(
-            applicant.requirements.meets_minimum_requirements === 'Meets all' &&
-            +applicant.requirements.distance_from_opportunity <= 20
-          ),
+          step,
         };
+
+        if (step) {
+          smsList.push(applicant);
+        }
 
         return {
           firstName: applicant.personal_details.first_name,
@@ -125,6 +165,7 @@ export async function GET(req: NextRequest) {
     }));
 
     await linkCandidatesToOpportunity(candidatesToLink);
+    sendAssessmentSMS(+opportunityId);
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {

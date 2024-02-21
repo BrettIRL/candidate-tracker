@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, sql, isNull, inArray } from 'drizzle-orm';
 import { opportunities } from '../schema/opportunities';
 import type {
   Candidate,
@@ -63,6 +63,24 @@ export async function getOpportunityCandidateById(
       and(
         eq(opportunitiesToCandidates.candidateId, candidateId),
         eq(opportunitiesToCandidates.opportunityId, opportunityId),
+        isNull(opportunitiesToCandidates.assessmentSMSSentAt),
+      ),
+    );
+}
+
+export async function getCandidatesForAssessmentSMS(opportunityId: number) {
+  return db
+    .select()
+    .from(opportunitiesToCandidates)
+    .innerJoin(
+      candidates,
+      eq(opportunitiesToCandidates.candidateId, candidates.id),
+    )
+    .where(
+      and(
+        eq(opportunitiesToCandidates.opportunityId, opportunityId),
+        eq(opportunitiesToCandidates.step, 1),
+        isNull(opportunitiesToCandidates.assessmentSMSSentAt),
       ),
     );
 }
@@ -91,7 +109,10 @@ export async function createOrUpdateCandidates(newCandidates: NewCandidate[]) {
 }
 
 export async function linkCandidatesToOpportunity(
-  data: Omit<NewOpportunityToCandidate, 'step' | 'createdAt' | 'updatedAt'>[],
+  data: Omit<
+    NewOpportunityToCandidate,
+    'step' | 'assessmentSMSSentAt' | 'createdAt' | 'updatedAt'
+  >[],
 ) {
   return db
     .insert(opportunitiesToCandidates)
@@ -102,6 +123,22 @@ export async function linkCandidatesToOpportunity(
         opportunitiesToCandidates.candidateId,
       ],
     });
+}
+
+export async function updateOpportunityCandidates(
+  candidateIds: number[],
+  opportunityId: number,
+  data: Partial<NewOpportunityToCandidate>,
+) {
+  return db
+    .update(opportunitiesToCandidates)
+    .set({ assessmentSMSSentAt: new Date() })
+    .where(
+      and(
+        eq(opportunitiesToCandidates.opportunityId, opportunityId),
+        inArray(opportunitiesToCandidates.candidateId, candidateIds),
+      ),
+    );
 }
 
 export async function changeStep(

@@ -1,6 +1,6 @@
 const MESSAGE_VARIABLES: { [key: string]: number } = {
   '{{name}}': 20,
-  '{{link}}': 15,
+  '{{link}}': 27,
 };
 
 export function characterCount(message: string) {

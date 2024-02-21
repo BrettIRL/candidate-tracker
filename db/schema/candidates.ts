@@ -30,8 +30,12 @@ export const candidates = pgTable('candidates', {
   tertiaryLevel: text('tertiary_level'),
   tertiaryField: text('tertiary_field'),
   tertiaryName: text('tertiary_name'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const candidatesRelations = relations(candidates, ({ many }) => ({
@@ -58,8 +62,18 @@ export const opportunitiesToCandidates = pgTable(
     prescreeningMark: integer('prescreening_mark'),
     assessmentMark: integer('assessment_mark'),
     step: integer('step').notNull().default(0),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+    assessmentSMSSentAt: timestamp('sent_assessment_sms_at', {
+      withTimezone: true,
+    }),
+    shortlistSMSSentAt: timestamp('sent_shortlist_sms_at', {
+      withTimezone: true,
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   table => ({
     pk: primaryKey(table.opportunityId, table.candidateId),
