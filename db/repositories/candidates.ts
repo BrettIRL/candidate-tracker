@@ -1,12 +1,14 @@
-import { and, eq, sql, isNull, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { opportunities } from '../schema/opportunities';
 import type {
   Candidate,
   NewCandidate,
   NewOpportunityToCandidate,
+  OpportunityToCandidate,
 } from '@/db/schema/candidates';
 import { candidates, opportunitiesToCandidates } from '@/db/schema/candidates';
 import { db } from '@/lib/db';
+import { SMSTemplate } from '@/ts/enums';
 
 export async function getCandidates(): Promise<Candidate[]> {
   return db.select().from(candidates);
@@ -48,9 +50,10 @@ export async function getOpportunityCandidateByIdNumber(
     .where(eq(candidates.idNumber, idNumber));
 }
 
-export async function getOpportunityCandidateById(
-  candidateId: number,
+export async function getOpportunityCandidatesById(
+  candidateId: number[],
   opportunityId: number,
+  timestampKey: keyof OpportunityToCandidate,
 ) {
   return db
     .select()
@@ -61,9 +64,9 @@ export async function getOpportunityCandidateById(
     )
     .where(
       and(
-        eq(opportunitiesToCandidates.candidateId, candidateId),
         eq(opportunitiesToCandidates.opportunityId, opportunityId),
-        isNull(opportunitiesToCandidates.assessmentSMSSentAt),
+        inArray(opportunitiesToCandidates.candidateId, candidateId),
+        isNull(opportunitiesToCandidates[timestampKey]),
       ),
     );
 }
@@ -132,7 +135,7 @@ export async function updateOpportunityCandidates(
 ) {
   return db
     .update(opportunitiesToCandidates)
-    .set({ assessmentSMSSentAt: new Date() })
+    .set(data)
     .where(
       and(
         eq(opportunitiesToCandidates.opportunityId, opportunityId),
@@ -142,7 +145,7 @@ export async function updateOpportunityCandidates(
 }
 
 export async function changeStep(
-  candidateId: number,
+  candidateIds: number[],
   opportunityId: number,
   step: number,
 ) {
@@ -151,7 +154,7 @@ export async function changeStep(
     .set({ step })
     .where(
       and(
-        eq(opportunitiesToCandidates.candidateId, candidateId),
+        inArray(opportunitiesToCandidates.candidateId, candidateIds),
         eq(opportunitiesToCandidates.opportunityId, opportunityId),
       ),
     );

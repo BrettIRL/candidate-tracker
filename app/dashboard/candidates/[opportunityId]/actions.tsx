@@ -21,14 +21,14 @@ import { candidateSteps } from '@/lib/mappings';
 import { JoinedCandidateOpportunity } from '@/ts/types';
 
 async function changeStep(
-  candidateId: number,
+  candidateIds: number[],
   opportunityId: number,
   step: number,
 ): Promise<boolean> {
   try {
     const response = await fetch('/api/candidates', {
       method: 'PATCH',
-      body: JSON.stringify({ candidateId, opportunityId, step }),
+      body: JSON.stringify({ candidateIds, opportunityId, step }),
     });
 
     if (!response.ok) {
@@ -65,7 +65,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
   const handleStepChange = async (step: string) => {
     const success = await changeStep(
-      row.original.candidates.id,
+      [row.original.candidates.id],
       row.original.opportunities.id,
       +step,
     );

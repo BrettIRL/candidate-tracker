@@ -1,3 +1,4 @@
+import { opportunitiesToCandidates } from '@/db/schema/candidates';
 import type { ContractType, SalaryType } from '@/db/schema/opportunities';
 import {
   SAYAge,
@@ -9,6 +10,7 @@ import {
   SAYRace,
   SAYSalaryFrequency,
   SAYSalaryType,
+  SMSTemplate,
 } from '@/ts/enums';
 
 export const contractTypeTextMapping: Record<ContractType, string> = {
@@ -190,6 +192,21 @@ export function resolveContactDuration(duration: number): SAYContractDuration {
 export const candidateSteps: Record<number, string> = {
   0: 'Imported',
   1: 'Assessment',
-  2: 'Passed',
-  3: 'Shortlist',
+  2: 'Failed',
+  3: 'Passed',
+  4: 'Shortlist',
+  5: 'Bridge',
+};
+
+export const smsTimestamps: Record<
+  SMSTemplate,
+  | 'assessmentSMSSentAt'
+  | 'shortlistSMSSentAt'
+  | 'successfulSMSSentAt'
+  | 'unsuccessfulSMSSentAt'
+> = {
+  [SMSTemplate.Assessment]: 'assessmentSMSSentAt',
+  [SMSTemplate.Shortlist]: 'shortlistSMSSentAt',
+  [SMSTemplate.Successful]: 'successfulSMSSentAt',
+  [SMSTemplate.Unsuccessful]: 'unsuccessfulSMSSentAt',
 };
