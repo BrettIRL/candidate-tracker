@@ -125,13 +125,13 @@ export function CandidateMultiSelectActions<TData>({
             size="sm"
             className="ml-auto hidden h-8 lg:flex"
           >
-            <Icons.gear className="mr-2 h-4 w-4" />
-            Actions
+            <Icons.multiselect className="mr-2 h-4 w-4" />
+            {table.getSelectedRowModel().rows.length} Candidates
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[150px]">
+        <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onSelect={() => setShowAmbassadorDialog(true)}>
-            Make Ambassador
+            Make Ambassadors
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Move to</DropdownMenuSubTrigger>

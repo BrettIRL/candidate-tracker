@@ -3,6 +3,7 @@
 import { Table } from '@tanstack/react-table';
 
 import { CandidateMultiSelectActions } from './candidate-multiselect-actions';
+import { DataTableActions } from './data-table-actions';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table-view-options';
 import { Icons } from '@/components/icons';
@@ -65,6 +66,7 @@ export function DataTableToolbar<TData>({
               table={table}
             />
           )}
+        {multiSelectActions !== undefined && <DataTableActions table={table} />}
         <DataTableViewOptions table={table} />
       </div>
     </div>
