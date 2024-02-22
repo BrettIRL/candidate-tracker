@@ -37,11 +37,9 @@ export function AssessmentQuestion({
             <Button
               key={answer.id}
               variant={selectedAnswer === answer.id ? 'default' : 'outline'}
+              size="flex"
               onClick={() => handleAnswerSelect(answer.id)}
             >
-              {selectedAnswer === answer.id && (
-                <Icons.checkSquare className="mr-2 h-4 w-4" />
-              )}
               {answer.answer}
             </Button>
           ))}

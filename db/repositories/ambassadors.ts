@@ -1,5 +1,6 @@
 import { eq, inArray } from 'drizzle-orm';
 import { ambassadors } from '@/db/schema/ambassadors';
+import type { NewAmbassador } from '@/db/schema/ambassadors';
 import { db } from '@/lib/db';
 
 export async function deleteAmbassadorById(id: number) {
@@ -19,4 +20,8 @@ export async function getAmbassadorsByIdNumbers(
     .where(inArray(ambassadors.idNumber, idNumbers));
 
   return new Set(result.map(row => row.idNumber));
+}
+
+export async function insertAmbassadors(newAmbassadors: NewAmbassador[]) {
+  return db.insert(ambassadors).values(newAmbassadors);
 }

@@ -68,6 +68,12 @@ export const opportunitiesToCandidates = pgTable(
     shortlistSMSSentAt: timestamp('sent_shortlist_sms_at', {
       withTimezone: true,
     }),
+    successfulSMSSentAt: timestamp('sent_successful_sms_at', {
+      withTimezone: true,
+    }),
+    unsuccessfulSMSSentAt: timestamp('sent_unsuccessful_sms_at', {
+      withTimezone: true,
+    }),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .defaultNow(),

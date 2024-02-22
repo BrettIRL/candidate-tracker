@@ -13,7 +13,7 @@ export const addOpportunitySchema = z
     yesOpportunity: z.boolean(),
     yesServiceProgram: z.boolean(),
     contractType: z.enum(contractEnum.enumValues),
-    duration: z.number().min(0),
+    duration: z.number().min(1, 'Duration is required'),
     capacity: z.number().min(1, 'Capacity is required'),
     closingDate: z.date({
       required_error: 'Closing date is required',

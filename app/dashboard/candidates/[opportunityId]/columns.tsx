@@ -125,6 +125,30 @@ export const columns: ColumnDef<{
     ),
   },
   {
+    accessorKey: 'prescreening',
+    accessorFn: row => row.opportunities_to_candidates.prescreeningMark,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Pre-Screening" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex space-x-2">
+        {row.getValue('prescreening') || 'Incomplete'}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'assessment',
+    accessorFn: row => row.opportunities_to_candidates.assessmentMark,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Assessment" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex space-x-2">
+        {row.getValue('assessment') || 'Incomplete'}
+      </div>
+    ),
+  },
+  {
     accessorKey: 'step',
     accessorFn: row => row.opportunities_to_candidates.step,
     header: ({ column }) => (
@@ -132,21 +156,8 @@ export const columns: ColumnDef<{
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <span className="max-w-[500px] truncate font-medium">
-          {row.getValue('step')} -{' '}
-          {candidateSteps[row.getValue<number>('step')]}
-        </span>
+        {row.getValue('step')} - {candidateSteps[row.getValue<number>('step')]}
       </div>
-    ),
-  },
-  {
-    accessorKey: 'assessment',
-    accessorFn: () => 'Incomplete',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Assessment" />
-    ),
-    cell: ({ row }) => (
-      <div className="flex space-x-2">{row.getValue('assessment')}</div>
     ),
   },
   {

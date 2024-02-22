@@ -41,6 +41,7 @@ export function CandidateAssessment({
   onSubmit,
 }: CandidateAssessmentProps) {
   const [allQuestions, setAllQuestions] = useState<QuestionsByCategory>({});
+  const [answered, setAnswered] = useState<{ [cat: string]: number[] }>({});
   const [categories, setCategories] = useState<string[]>([]);
   const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
@@ -82,14 +83,30 @@ export function CandidateAssessment({
     setQuestions(allQuestions[category]);
   };
 
-  const handleAnswerSelect = (questionId: number, selectedAnswers: number) => {
-    if (answers[questionId]) {
-      const newAnswers = { ...answers };
+  const handleAnswerSelect = (questionId: number, selectedAnswer: number) => {
+    const cat = categories[selectedCategory];
+
+    const newAnswers = { ...answers };
+    if (newAnswers[questionId] === selectedAnswer) {
       delete newAnswers[questionId];
-      setAnswers(newAnswers);
     } else {
-      setAnswers({ ...answers, [questionId]: selectedAnswers });
+      newAnswers[questionId] = selectedAnswer;
     }
+
+    const answerCount = { ...answered };
+    if (!answerCount[cat]) {
+      answerCount[cat] = [];
+    }
+    if (!answerCount[cat].includes(questionId)) {
+      answerCount[cat].push(questionId);
+    } else {
+      if (!newAnswers[questionId]) {
+        answerCount[cat].splice(answerCount[cat].indexOf(questionId), 1);
+      }
+    }
+
+    setAnswers(newAnswers);
+    setAnswered(answerCount);
   };
 
   const handleSubmit = () => {
@@ -108,7 +125,8 @@ export function CandidateAssessment({
               className={cn(idx === selectedCategory ? 'font-bold' : '')}
               onClick={() => handleCategoryChange(idx)}
             >
-              {category}
+              {category} ({answered[category]?.length || 0}/
+              {allQuestions[category].length})
             </Button>
           </li>
         ))}

@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   RowSelectionState,
   SortingState,
   VisibilityState,
@@ -39,6 +40,7 @@ interface DataTableProps<TData, TValue> {
   facetFilters?: string[];
   filterColumn: string;
   visibleColumns?: VisibilityState;
+  multiSelectActions?: number; // TODO: Work out how to pass a component here
 }
 
 export function DataTable<TData, TValue>({
@@ -48,6 +50,7 @@ export function DataTable<TData, TValue>({
   facetFilters,
   filterColumn,
   visibleColumns,
+  multiSelectActions,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -88,6 +91,7 @@ export function DataTable<TData, TValue>({
         table={table}
         facetFilters={facetFilters}
         filterColumn={filterColumn}
+        multiSelectActions={multiSelectActions}
       />
       <div className="rounded-md border">
         <Table>

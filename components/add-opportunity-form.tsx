@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { OpportunityCompensationForm } from './opportunity-compensation-form';
 import { OpportunityDetailsForm } from './opportunity-details-form';
@@ -12,6 +12,7 @@ import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
+import { useOpportunityContext } from '@/contexts/OpportunityContext';
 import {
   addOpportunitySchema,
   type OpportunityValues,
@@ -19,30 +20,32 @@ import {
 
 export function AddOpportunityForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { templateOpportunity: template } = useOpportunityContext();
   const router = useRouter();
 
   const form = useForm<OpportunityValues>({
     resolver: zodResolver(addOpportunitySchema),
     defaultValues: {
-      title: '',
-      description: '',
+      title: template?.title || '',
+      description: template?.description || '',
       yesOpportunity: false,
       yesServiceProgram: false,
-      contractType: undefined,
+      contractType: template?.contractType,
       duration: 0,
-      capacity: 1,
+      capacity: template?.capacity || 1,
       closingDate: undefined,
-      salaryType: undefined,
-      salaryFrequency: undefined,
-      salary: 0,
-      benefits: '',
-      requirements: '',
-      education: [],
-      language: [],
-      gender: [],
-      race: [],
-      minAge: 18,
-      maxAge: 34,
+      salaryType: template?.salaryType,
+      salaryFrequency: template?.salaryFrequency || undefined,
+      salary: !isNaN(Number(template?.salary)) ? Number(template?.salary) : 0,
+      benefits: template?.benefits || '',
+      requirements: template?.requirements || '',
+      education: template?.education || [],
+      language: template?.language || [],
+      gender: template?.gender || [],
+      race: template?.race || [],
+      minAge: template?.minAge || 18,
+      maxAge: template?.maxAge || 34,
       address: undefined,
     },
     mode: 'onChange',

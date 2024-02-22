@@ -1,6 +1,8 @@
 import type { Row } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Icons } from '@/components/icons';
+import { OpportunityUrlDialog } from '@/components/opportunity-url-dialog';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useOpportunityContext } from '@/contexts/OpportunityContext';
 import type { Opportunity } from '@/db/schema/opportunities';
 
 interface DataTableRowActionsProps {
@@ -16,7 +19,17 @@ interface DataTableRowActionsProps {
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
+  const [showUrlDialog, setShowUrlDialog] = useState<boolean>(false);
+
+  const context = useOpportunityContext();
   const router = useRouter();
+
+  const handleDuplicate = () => {
+    context.setTemplateOpportunity(row.original);
+    router.push(
+      `${process.env.NEXT_PUBLIC_AUTHENTICATED_REDIRECT}/opportunities/create`,
+    );
+  };
 
   return (
     <>
@@ -41,12 +54,27 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             View Candidates
           </DropdownMenuItem>
           <DropdownMenuItem>Change Status</DropdownMenuItem>
+          {row.original.providerId && (
+            <DropdownMenuItem onSelect={() => setShowUrlDialog(true)}>
+              Get SA Youth URL
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem onSelect={handleDuplicate}>
+            Duplicate
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="flex cursor-pointer items-center text-destructive focus:text-destructive">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {row.original.providerId && (
+        <OpportunityUrlDialog
+          providerId={row.original.providerId}
+          open={showUrlDialog}
+          onOpenChange={setShowUrlDialog}
+        />
+      )}
     </>
   );
 }

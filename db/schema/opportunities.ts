@@ -74,6 +74,7 @@ export const opportunities = pgTable('opportunities', {
   id: serial('id').primaryKey(),
   providerId: text('provider_id'),
   title: text('title').notNull(),
+  description: text('description'),
   contractType: contractEnum('contact_type').notNull(),
   capacity: integer('capacity').notNull(),
   closingDate: date('closing_date').notNull(),

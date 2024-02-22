@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { AssessmentProvider } from '@/contexts/AssessmentContext';
 import { cn } from '@/lib/utils';
@@ -21,14 +22,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
           inter.className,
         )}
       >
-        <AssessmentProvider>{children}</AssessmentProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AssessmentProvider>{children}</AssessmentProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>

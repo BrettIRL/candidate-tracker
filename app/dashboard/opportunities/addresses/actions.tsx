@@ -1,6 +1,8 @@
 import type { Row } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { deleteAddress } from '@/actions/addresses';
+import { DeleteAlertDialog } from '@/components/delete-alert-dialog';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,31 +14,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/components/ui/use-toast';
 import type { Address } from '@/db/schema/addresses';
-
-async function deleteAddress(addressId: number): Promise<boolean> {
-  try {
-    const response = await fetch(`/api/addresses/${addressId}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      const error: { message: string } = await response.json();
-      throw new Error(
-        `Failed to delete address. Status: ${response.status}. ${error.message}`,
-      );
-    }
-
-    return true;
-  } catch (error) {
-    toast({
-      title: 'Error Deleting Address',
-      description: 'Address was not deleted. Please try again.',
-      variant: 'destructive',
-    });
-
-    return false;
-  }
-}
 
 interface DataTableRowActionsProps {
   count: number;
@@ -52,14 +29,18 @@ export function DataTableRowActions({ count, row }: DataTableRowActionsProps) {
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsDeleteLoading(true);
-
-    const deleted = await deleteAddress(row.original.id);
-
-    if (deleted) {
+    const response = await deleteAddress(row.original.id);
+    if (response.success) {
       setShowDeleteAlert(false);
       router.refresh();
+    } else {
+      toast({
+        title: 'Error deleting address',
+        description: 'Address was not deleted. Please try again.',
+        variant: 'destructive',
+      });
     }
-
+    setShowDeleteAlert(false);
     setIsDeleteLoading(false);
   };
 
@@ -96,14 +77,14 @@ export function DataTableRowActions({ count, row }: DataTableRowActionsProps) {
       {/*   onOpenChange={setShowEditDialog} */}
       {/*   user={row.original} */}
       {/* /> */}
-      {/* <DeleteAlertDialog */}
-      {/*   title="Are you sure you want to delete this user?" */}
-      {/*   description="This action cannot be undone." */}
-      {/*   open={showDeleteAlert && count > 1} */}
-      {/*   loading={isDeleteLoading} */}
-      {/*   onOpenChange={setShowDeleteAlert} */}
-      {/*   onAction={handleDelete} */}
-      {/* /> */}
+      <DeleteAlertDialog
+        title="Are you sure you want to delete this address?"
+        description="This action cannot be undone."
+        open={showDeleteAlert && count > 1}
+        loading={isDeleteLoading}
+        onOpenChange={setShowDeleteAlert}
+        onAction={handleDelete}
+      />
     </>
   );
 }
