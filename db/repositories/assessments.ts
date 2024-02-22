@@ -162,10 +162,11 @@ export async function insertAssessmentMark(
   candidateId: number,
   opportunityId: number,
   assessmentMark: number,
+  step: number,
 ) {
   return db
     .update(opportunitiesToCandidates)
-    .set({ assessmentMark })
+    .set({ step, assessmentMark })
     .where(
       and(
         eq(opportunitiesToCandidates.candidateId, candidateId),

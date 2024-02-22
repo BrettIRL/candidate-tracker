@@ -49,10 +49,13 @@ export async function POST(req: Request) {
     );
 
     const percentage = Math.ceil((mark / overall) * 100);
+    const passPercentage = +(process.env.ASSESS_PASS_PERCENTAGE || 70);
+    const step = percentage >= passPercentage ? 3 : 2;
     await insertAssessmentMark(
       +data.candidateId,
       +data.opportunityId,
       percentage,
+      step,
     );
 
     return new NextResponse(null, { status: 204 });
