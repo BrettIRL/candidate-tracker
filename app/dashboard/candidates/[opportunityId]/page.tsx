@@ -29,9 +29,11 @@ export default function OpportunityCandidatesPage({
     let columns = {};
     switch (step) {
       case 0:
-        columns = { assessment: false, step: false };
+        columns = { prescreening: false, assessment: false, step: false };
         break;
       case 1:
+      case 2:
+      case 3:
         columns = {
           distance: false,
           rank: false,
@@ -39,6 +41,24 @@ export default function OpportunityCandidatesPage({
           step: false,
         };
         break;
+      case 4:
+        columns = {
+          distance: false,
+          rank: false,
+          requirements: false,
+          prescreening: false,
+          step: false,
+        };
+        break;
+      case 5:
+        columns = {
+          distance: false,
+          rank: false,
+          requirements: false,
+          prescreening: false,
+          assessment: false,
+          step: false,
+        };
     }
     setVisibleColumns(columns);
     setStep(step);
@@ -61,6 +81,7 @@ export default function OpportunityCandidatesPage({
         initialState={{ columnVisibility: visibleColumns }}
         filterColumn="name"
         visibleColumns={visibleColumns}
+        multiSelectActions={step}
       />
     </div>
   );

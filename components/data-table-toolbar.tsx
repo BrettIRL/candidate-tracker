@@ -2,26 +2,27 @@
 
 import { Table } from '@tanstack/react-table';
 
+import { CandidateMultiSelectActions } from './candidate-multiselect-actions';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table-view-options';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { capitalize } from '@/lib/utils';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   facetFilters?: string[];
   filterColumn: string;
+  multiSelectActions?: number;
 }
 
 export function DataTableToolbar<TData>({
   table,
   facetFilters,
   filterColumn,
+  multiSelectActions,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const rows = table.getRowModel().rows;
 
   return (
     <div className="flex items-center justify-between">
@@ -56,7 +57,16 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center space-x-2">
+        {table.getSelectedRowModel().rows.length > 1 &&
+          multiSelectActions !== undefined && (
+            <CandidateMultiSelectActions
+              step={multiSelectActions}
+              table={table}
+            />
+          )}
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   );
 }
