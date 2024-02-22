@@ -1,5 +1,7 @@
 import type { Row } from '@tanstack/react-table';
 import { useState } from 'react';
+import { addAmbassadors } from '@/actions/ambassadors';
+import { ConfirmationAlertDialog } from '@/components/confirmation-alert-dialog';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -61,6 +63,11 @@ interface DataTableRowActionsProps {
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const [showViewCandidateDialog, setShowViewCandidateDialog] =
     useState<boolean>(false);
+  const [showAmbassadorDialog, setShowAmbassadorDialog] =
+    useState<boolean>(false);
+  const [isAmbassadorLoading, setIsAmbassadorLoading] =
+    useState<boolean>(false);
+
   const { refreshCandidates } = useCandidateContext();
 
   const handleStepChange = async (step: string) => {
@@ -73,6 +80,27 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
     if (success) {
       refreshCandidates('' + row.original.opportunities.id);
     }
+  };
+
+  const handleAmbassadorChange = async () => {
+    setIsAmbassadorLoading(true);
+
+    const result = await addAmbassadors([row.original.candidates]);
+
+    if (result.success) {
+      toast({
+        title: 'Success',
+        description: 'Ambassador has been successfully added',
+      });
+    } else {
+      toast({
+        title: 'Error adding ambassador',
+        description:
+          'There was a problem adding the ambassador. Please try again.',
+        variant: 'destructive',
+      });
+    }
+    setIsAmbassadorLoading(false);
   };
 
   return (
@@ -90,6 +118,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onSelect={() => setShowViewCandidateDialog(true)}>
             View Candidate
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setShowAmbassadorDialog(true)}>
+            Make Ambassador
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Move to</DropdownMenuSubTrigger>
@@ -114,6 +145,14 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         candidate={row.original.candidates}
         open={showViewCandidateDialog}
         onOpenChange={setShowViewCandidateDialog}
+      />
+      <ConfirmationAlertDialog
+        title="Are you sure you want to make this candidate an ambassador?"
+        description="Ambassadors are excluded from future opportunities."
+        open={showAmbassadorDialog}
+        loading={isAmbassadorLoading}
+        onOpenChange={setShowAmbassadorDialog}
+        onAction={handleAmbassadorChange}
       />
     </>
   );

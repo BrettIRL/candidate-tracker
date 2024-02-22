@@ -1,14 +1,16 @@
 import { Table } from '@tanstack/react-table';
+import { useState } from 'react';
+import { ConfirmationAlertDialog } from './confirmation-alert-dialog';
+import { addAmbassadors } from '@/actions/ambassadors';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
+  DropdownMenuItem,
   DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -62,6 +64,11 @@ export function CandidateMultiSelectActions<TData>({
   step,
   table,
 }: CandidateMultiSelectActionsProps<TData>) {
+  const [showAmbassadorDialog, setShowAmbassadorDialog] =
+    useState<boolean>(false);
+  const [isAmbassadorLoading, setIsAmbassadorLoading] =
+    useState<boolean>(false);
+
   const { refreshCandidates } = useCandidateContext();
 
   const handleStepChange = async (step: string) => {
@@ -84,39 +91,75 @@ export function CandidateMultiSelectActions<TData>({
     }
   };
 
+  const handleAmbassadorChange = async () => {
+    setIsAmbassadorLoading(true);
+
+    const selectedCandidates = table
+      .getSelectedRowModel()
+      .rows.map(row => (row.original as JoinedCandidateOpportunity).candidates);
+    const result = await addAmbassadors(selectedCandidates);
+
+    if (result.success) {
+      toast({
+        title: 'Success',
+        description: 'Ambassador has been successfully added',
+      });
+    } else {
+      toast({
+        title: 'Error adding ambassador',
+        description:
+          'There was a problem adding the ambassador. Please try again.',
+        variant: 'destructive',
+      });
+    }
+
+    setIsAmbassadorLoading(false);
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto hidden h-8 lg:flex"
-        >
-          <Icons.gear className="mr-2 h-4 w-4" />
-          Actions
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
-        {/* <DropdownMenuLabel>Toggle columns</DropdownMenuLabel> */}
-        {/* <DropdownMenuSeparator /> */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Move to</DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              <DropdownMenuRadioGroup
-                value={'' + step}
-                onValueChange={handleStepChange}
-              >
-                {Object.keys(candidateSteps).map(step => (
-                  <DropdownMenuRadioItem key={step} value={step}>
-                    {candidateSteps[+step]}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto hidden h-8 lg:flex"
+          >
+            <Icons.gear className="mr-2 h-4 w-4" />
+            Actions
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[150px]">
+          <DropdownMenuItem onSelect={() => setShowAmbassadorDialog(true)}>
+            Make Ambassador
+          </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Move to</DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup
+                  value={'' + step}
+                  onValueChange={handleStepChange}
+                >
+                  {Object.keys(candidateSteps).map(step => (
+                    <DropdownMenuRadioItem key={step} value={step}>
+                      {candidateSteps[+step]}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationAlertDialog
+        title="Are you sure you want to make these candidates ambassadors?"
+        description="Ambassadors are excluded from future opportunities."
+        open={showAmbassadorDialog}
+        loading={isAmbassadorLoading}
+        onOpenChange={setShowAmbassadorDialog}
+        onAction={handleAmbassadorChange}
+      />
+    </>
   );
 }
