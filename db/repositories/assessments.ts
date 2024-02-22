@@ -39,6 +39,31 @@ export async function deleteQuestion(questionId: number) {
   });
 }
 
+export async function getCandidatePrescreeningAnswers(
+  candidateId: number,
+  opportunityId: number,
+) {
+  return db
+    .select({
+      answers: sql<
+        {
+          question: string;
+          answer: string;
+        }[]
+      >`json_agg(json_build_object('question', ${questions.question}, 'answer', ${answers.answer}))`,
+    })
+    .from(userAnswers)
+    .innerJoin(questions, eq(questions.id, userAnswers.questionId))
+    .innerJoin(answers, eq(answers.id, userAnswers.answerId))
+    .where(
+      and(
+        eq(userAnswers.candidateId, candidateId),
+        eq(userAnswers.opportunityId, opportunityId),
+      ),
+    )
+    .groupBy();
+}
+
 export async function getQuestions() {
   return db
     .select({

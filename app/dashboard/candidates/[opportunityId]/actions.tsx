@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { addAmbassadors } from '@/actions/ambassadors';
 import { ConfirmationAlertDialog } from '@/components/confirmation-alert-dialog';
 import { Icons } from '@/components/icons';
+import { PrescreeningAnswersDialog } from '@/components/prescreening-answers-dialog';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -67,6 +68,8 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
     useState<boolean>(false);
   const [isAmbassadorLoading, setIsAmbassadorLoading] =
     useState<boolean>(false);
+  const [showPrescreeningAnswersDialog, setShowPrescreeningAnswersDialog] =
+    useState<boolean>(false);
 
   const { refreshCandidates } = useCandidateContext();
 
@@ -115,12 +118,19 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             <span className="sr-only">Open Menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuContent align="end" className="w-[180px]">
           <DropdownMenuItem onSelect={() => setShowViewCandidateDialog(true)}>
             View Candidate
           </DropdownMenuItem>
+          {row.original.opportunities_to_candidates.prescreeningMark && (
+            <DropdownMenuItem
+              onSelect={() => setShowPrescreeningAnswersDialog(true)}
+            >
+              Pre-Screening Answers
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onSelect={() => setShowAmbassadorDialog(true)}>
-            Make Ambassador
+            Add to Ambassadors
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Move to</DropdownMenuSubTrigger>
@@ -153,6 +163,12 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         loading={isAmbassadorLoading}
         onOpenChange={setShowAmbassadorDialog}
         onAction={handleAmbassadorChange}
+      />
+      <PrescreeningAnswersDialog
+        candidate={row.original.candidates}
+        opportunityId={row.original.opportunities.id}
+        open={showPrescreeningAnswersDialog}
+        onOpenChange={setShowPrescreeningAnswersDialog}
       />
     </>
   );
