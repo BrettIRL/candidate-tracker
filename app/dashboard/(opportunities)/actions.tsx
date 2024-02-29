@@ -2,6 +2,8 @@ import type { Row } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Icons } from '@/components/icons';
+import { OpportunityPauseDialog } from '@/components/opportunity-pause-dialog';
+import { OpportunityResumeDialog } from '@/components/opportunity-resume-dialog';
 import { OpportunityUrlDialog } from '@/components/opportunity-url-dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +21,8 @@ interface DataTableRowActionsProps {
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
+  const [showPauseDialog, setShowPauseDialog] = useState<boolean>(false);
+  const [showResumeDialog, setShowResumeDialog] = useState<boolean>(false);
   const [showUrlDialog, setShowUrlDialog] = useState<boolean>(false);
 
   const context = useOpportunityContext();
@@ -53,7 +57,15 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           >
             View Candidates
           </DropdownMenuItem>
-          <DropdownMenuItem>Change Status</DropdownMenuItem>
+          {row.original.providerStatus !== 'paused' ? (
+            <DropdownMenuItem onSelect={() => setShowPauseDialog(true)}>
+              Pause Opportunity
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onSelect={() => setShowResumeDialog(true)}>
+              Resume Opportunity
+            </DropdownMenuItem>
+          )}
           {row.original.providerId && (
             <DropdownMenuItem onSelect={() => setShowUrlDialog(true)}>
               Get SA Youth URL
@@ -73,6 +85,20 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           providerId={row.original.providerId}
           open={showUrlDialog}
           onOpenChange={setShowUrlDialog}
+        />
+      )}
+      {row.original.providerId && (
+        <OpportunityPauseDialog
+          providerId={row.original.providerId}
+          open={showPauseDialog}
+          onOpenChange={setShowPauseDialog}
+        />
+      )}
+      {row.original.providerId && (
+        <OpportunityResumeDialog
+          providerId={row.original.providerId}
+          open={showResumeDialog}
+          onOpenChange={setShowResumeDialog}
         />
       )}
     </>

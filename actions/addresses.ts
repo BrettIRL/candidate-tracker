@@ -9,6 +9,6 @@ export async function deleteAddress(addressId: number) {
     return { success: true };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }

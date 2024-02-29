@@ -60,20 +60,39 @@ export const columns: ColumnDef<Opportunity>[] = [
     ),
   },
   {
-    accessorKey: 'providerId',
+    accessorKey: 'providerStatus',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="SA Youth" />
     ),
     cell: ({ row }) => {
-      const providerId = row.getValue('providerId');
+      let status = {
+        icon: <Icons.offline className="mr-2 h-4 w-4 text-gray-500" />,
+        text: 'Offline',
+      };
+
+      switch (row.getValue('providerStatus')) {
+        case 'active':
+          status.icon = (
+            <Icons.online className="mr-2 h-4 w-4 text-green-500" />
+          );
+          status.text = 'Online';
+          break;
+        case 'paused':
+          status.icon = (
+            <Icons.paused className="mr-2 h-4 w-4 text-yellow-500" />
+          );
+          status.text = 'Paused';
+          break;
+        case 'deleted':
+          status.icon = <Icons.deleted className="mr-2 h-4 w-4 text-red-500" />;
+          status.text = 'Deleted';
+          break;
+      }
+
       return (
         <div className="flex w-[100px] items-center">
-          {!!providerId ? (
-            <Icons.online className="mr-2 h-4 w-4 text-green-500" />
-          ) : (
-            <Icons.offline className="mr-2 h-4 w-4 text-red-500" />
-          )}
-          <span>{!!providerId ? 'Online' : 'Offline'}</span>
+          {status.icon}
+          <span>{status.text}</span>
         </div>
       );
     },

@@ -53,6 +53,13 @@ export function AddScenarioDialog({
       router.refresh();
       form.reset();
       onOpenChange(false);
+    } else {
+      toast({
+        title: 'Error creating scenario',
+        description:
+          'There was a problem creating the scenario. Please try again.',
+        variant: 'destructive',
+      });
     }
 
     setIsLoading(false);

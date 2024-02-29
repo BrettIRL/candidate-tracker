@@ -70,9 +70,16 @@ export const raceEnum = pgEnum('race', [
   'white',
 ]);
 
+export const statusEnum = pgEnum('provider_status', [
+  'active',
+  'paused',
+  'deleted',
+]);
+
 export const opportunities = pgTable('opportunities', {
   id: serial('id').primaryKey(),
   providerId: text('provider_id'),
+  providerStatus: statusEnum('provider_status'),
   title: text('title').notNull(),
   description: text('description'),
   contractType: contractEnum('contact_type').notNull(),

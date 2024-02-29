@@ -104,4 +104,16 @@ export const addOpportunitySchema = z
     }
   });
 
+export const pauseOpportunitySchema = z.object({
+  reason: z.string().min(1, 'Reason is required'),
+});
+
+export const resumeOpportunitySchema = z.object({
+  closingDate: z.date({
+    required_error: 'Closing date is required',
+  }),
+});
+
 export type OpportunityValues = z.infer<typeof addOpportunitySchema>;
+export type PauseOpportunityValues = z.infer<typeof pauseOpportunitySchema>;
+export type ResumeOpportunityValues = z.infer<typeof resumeOpportunitySchema>;

@@ -15,7 +15,7 @@ export async function fetchCandidatePrescreeningAnswers(
     return { success: true, data: data[0] };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }
 
@@ -26,6 +26,6 @@ export async function sendUnsuccessfulSMS(opportunityId: number) {
     return { success: true };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }

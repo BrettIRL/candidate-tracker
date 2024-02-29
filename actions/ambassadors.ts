@@ -21,7 +21,7 @@ export async function addAmbassadors(candidates: Candidate[]) {
     return { success: true };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }
 
@@ -31,6 +31,6 @@ export async function deleteAmbassador(ambassadorId: number) {
     return { success: true };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }

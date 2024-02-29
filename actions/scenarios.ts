@@ -15,7 +15,7 @@ export async function addScenario(scenario: NewScenario) {
     return { success: true };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }
 
@@ -25,7 +25,7 @@ export async function deleteScenario(scenarioId: number) {
     return { success: true };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }
 
@@ -35,6 +35,6 @@ export async function fetchScenarios() {
     return { success: true, data };
   } catch (error) {
     logger.error(error);
-    return { success: false, error };
+    return { success: false };
   }
 }
