@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { getAmbassadorsByIdNumbers } from '@/db/repositories/ambassadors';
 import {
@@ -31,6 +32,7 @@ async function fetchOpportunityCandidates(opportunityId: string) {
 
 async function sendAssessmentSMS(opportunityId: number) {
   try {
+    const hostname = process.env.HOSTNAME || '/';
     const candidatesToSMS = await getCandidatesForAssessmentSMS(opportunityId);
     const template = await getSetting(SMSTemplate.Assessment);
 
@@ -41,8 +43,7 @@ async function sendAssessmentSMS(opportunityId: number) {
     candidatesToSMS.forEach(candidate => {
       sendSMS(candidate.candidates.phone, template, {
         name: candidate.candidates.firstName,
-        // TODO: generate full link
-        link: `${opportunityId}`,
+        link: `${hostname}a/${opportunityId}`,
       });
     });
 

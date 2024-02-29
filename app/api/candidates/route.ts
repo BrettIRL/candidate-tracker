@@ -16,6 +16,7 @@ async function sendCandidateSMS(
   smsType: SMSTemplate,
 ) {
   try {
+    const hostname = process.env.HOSTNAME || '/';
     const candidatesToSMS = await getOpportunityCandidatesById(
       candidateIds,
       opportunityId,
@@ -30,8 +31,7 @@ async function sendCandidateSMS(
     candidatesToSMS.forEach(candidate => {
       sendSMS(candidate.candidates.phone, template, {
         name: candidate.candidates.firstName,
-        // TODO: generate actual link
-        link: `https://example.com/a/${opportunityId}`,
+        link: `${hostname}a/${opportunityId}`,
       });
     });
 
