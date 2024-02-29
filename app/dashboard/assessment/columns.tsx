@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import type { Question } from '@/db/schema/assessment';
 
 export const columns: ColumnDef<
-  Omit<Question, 'category'> & { category: string }
+  Omit<Question, 'category' | 'scenario'> & { category: string }
 >[] = [
   {
     id: 'select',

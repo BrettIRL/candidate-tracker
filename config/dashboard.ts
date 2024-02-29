@@ -42,6 +42,11 @@ export const DashboardSidebarNav: { [key: string]: SidebarNavItem[] } = {
       href: '/dashboard/assessment/categories',
       icon: 'folderClosed',
     },
+    {
+      title: 'Scenarios',
+      href: '/dashboard/assessment/scenarios',
+      icon: 'scenario',
+    },
   ],
   '/dashboard/users': [
     { title: 'Users', href: '/dashboard/users', icon: 'users' },

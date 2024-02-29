@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from './ui/use-toast';
+import { fetchScenarios } from '@/actions/scenarios';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,54 +16,40 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import type { Category } from '@/db/schema/assessment';
+import type { Scenario } from '@/db/schema/assessment';
 import { cn } from '@/lib/utils';
 import styles from '@/styles/classes.module.css';
 
-async function fetchCategories(): Promise<Category[]> {
-  try {
-    const response = await fetch('/api/assessments/category');
-
-    if (!response.ok) {
-      const error: { message: string } = await response.json();
-      throw new Error(
-        `Failed to fetch categories. Status: ${response.status}. ${error.message}`,
-      );
-    }
-
-    const categories = await response.json();
-    return categories;
-  } catch (error) {
-    toast({
-      title: 'Error fetching categories',
-      description:
-        'There was a problem fetching categories. Please reloed page and try again',
-      variant: 'destructive',
-    });
-    return [];
-  }
-}
-
-interface CategorySelectorProps {
-  defaultValue?: number;
-  onChange: (categoryId: Number) => void;
+interface ScenarioSelectorProps {
+  defaultValue?: number | null;
+  onChange: (scenarioId: Number | null) => void;
   disabled?: boolean;
 }
 
-export function CategorySelector({
+export function ScenarioSelector({
   defaultValue,
   onChange,
   disabled,
-}: CategorySelectorProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
+}: ScenarioSelectorProps) {
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchCategories();
-      setCategories(data);
-      setIsLoading(false);
+      const result = await fetchScenarios();
+      if (result.success) {
+        setScenarios(result.data!);
+        setIsLoading(false);
+      } else {
+        toast({
+          title: 'Error fetching scenarios',
+          description:
+            'There was a problem fetching scenarios. Please reload and try again.',
+          variant: 'destructive',
+        });
+        setIsLoading(false);
+      }
     };
 
     fetchData();
@@ -82,33 +69,48 @@ export function CategorySelector({
             disabled={isLoading || disabled}
           >
             {defaultValue
-              ? categories.find(cat => cat.id === defaultValue)?.name
-              : 'Select Category'}
+              ? scenarios.find(scenario => scenario.id === defaultValue)?.title
+              : 'Select Scenario'}
             <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </FormControl>
       </PopoverTrigger>
       <PopoverContent className={cn('p-0', styles.matchPopoverWidthToTrigger)}>
         <Command>
-          <CommandInput placeholder="Search category..." />
-          <CommandEmpty>No category found.</CommandEmpty>
+          <CommandInput placeholder="Search scenario..." />
+          <CommandEmpty>No scenario found.</CommandEmpty>
           <CommandGroup>
-            {categories.map(category => (
+            <CommandItem
+              value="test"
+              onSelect={() => {
+                onChange(null);
+                setPopoverOpen(false);
+              }}
+            >
+              <Icons.check
+                className={cn(
+                  'mr-2 h-4 w-4',
+                  !defaultValue ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+              No Scenario
+            </CommandItem>
+            {scenarios.map(scenario => (
               <CommandItem
-                value={category.name}
-                key={category.id}
+                value={scenario.title}
+                key={scenario.id}
                 onSelect={() => {
-                  onChange(category.id);
+                  onChange(scenario.id);
                   setPopoverOpen(false);
                 }}
               >
                 <Icons.check
                   className={cn(
                     'mr-2 h-4 w-4',
-                    category.id === defaultValue ? 'opacity-100' : 'opacity-0',
+                    scenario.id === defaultValue ? 'opacity-100' : 'opacity-0',
                   )}
                 />
-                {category.name}
+                {scenario.title}
               </CommandItem>
             ))}
           </CommandGroup>

@@ -70,6 +70,7 @@ export async function POST(req: Request) {
       {
         question: data.question,
         category: data.category,
+        scenario: data.scenario || null,
         preScreening: data.preScreening,
       },
       data.answers,

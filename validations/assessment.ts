@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const addQuestionSchema = z
   .object({
     category: z.number({ required_error: 'Category is required' }),
+    scenario: z.number().nullable(),
     question: z.string().min(1, 'Question is required'),
     preScreening: z.boolean(),
     answers: z
@@ -28,5 +29,11 @@ export const addCategorySchema = z.object({
   name: z.string().min(1, 'Category name is required'),
 });
 
+export const addScenarioSchema = z.object({
+  title: z.string().min(1, 'Scenario title is required'),
+  description: z.string().min(1, 'Scenario description is required'),
+});
+
 export type QuestionValues = z.infer<typeof addQuestionSchema>;
 export type CategoryValues = z.infer<typeof addCategorySchema>;
+export type ScenarioValues = z.infer<typeof addScenarioSchema>;

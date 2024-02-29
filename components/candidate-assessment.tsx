@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
+import { AssessmentScenario } from './assessment-scenario';
 import { AssessmentQuestion as Question } from '@/components/assessment-question';
 import { AssessmentQuestionsSkeleton } from '@/components/assessment-questions-skeleton';
 import { Icons } from '@/components/icons';
@@ -77,6 +78,16 @@ export function CandidateAssessment({
     return questionCount <= Object.keys(answers).length;
   }, [allQuestions, answers]);
 
+  const scenario = useMemo(() => {
+    // NOTE: Assumes only one scenario per questions in category
+    const questionsWithScenario = questions.filter(q => q.scenario);
+    if (questionsWithScenario.length) {
+      return questionsWithScenario[0].scenario;
+    }
+
+    return null;
+  }, [questions]);
+
   const handleCategoryChange = (categoryIndex: number) => {
     const category = categories[categoryIndex];
     setSelectedCategory(categoryIndex);
@@ -136,6 +147,7 @@ export function CandidateAssessment({
           Assessment Questions
         </h1>
         {isFetching && <AssessmentQuestionsSkeleton />}
+        <AssessmentScenario scenario={scenario} />
         {questions.map(question => (
           <Question
             key={question.id}

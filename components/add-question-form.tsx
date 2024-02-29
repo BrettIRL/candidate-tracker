@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { CategorySelector } from '@/components/category-selector';
 import { Icons } from '@/components/icons';
+import { ScenarioSelector } from '@/components/scenario-selector';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -63,6 +64,7 @@ export function AddQuestionForm() {
     defaultValues: {
       question: '',
       category: undefined,
+      scenario: null,
       preScreening: false,
       answers: [{ answer: '', weight: undefined }],
     },
@@ -114,6 +116,20 @@ export function AddQuestionForm() {
             <FormItem>
               <FormLabel>Category</FormLabel>
               <CategorySelector
+                defaultValue={field.value}
+                onChange={field.onChange}
+                disabled={isLoading}
+              />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="scenario"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Scenario</FormLabel>
+              <ScenarioSelector
                 defaultValue={field.value}
                 onChange={field.onChange}
                 disabled={isLoading}

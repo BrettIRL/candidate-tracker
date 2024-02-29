@@ -1,6 +1,7 @@
 import type { Row } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { deleteScenario } from '@/actions/scenarios';
 import { DeleteAlertDialog } from '@/components/delete-alert-dialog';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -11,51 +12,33 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/components/ui/use-toast';
-import type { Question } from '@/db/schema/assessment';
-
-async function deleteQuestion(questionId: string): Promise<boolean> {
-  try {
-    const response = await fetch(`/api/assessments/questions/${questionId}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      const error: { message: string } = await response.json();
-      throw new Error(
-        `Failed to delete question. Status: ${response.status}. ${error.message}`,
-      );
-    }
-
-    return true;
-  } catch (error) {
-    toast({
-      title: 'Error Deleting Question',
-      description: 'Question was not deleted. Please try again.',
-      variant: 'destructive',
-    });
-
-    return false;
-  }
-}
+import type { Scenario } from '@/db/schema/assessment';
 
 interface DataTableRowActionsProps {
-  row: Row<Omit<Question, 'category' | 'scenario'> & { category: string }>;
+  row: Row<Scenario>;
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const [showDeleteAlert, setShowDeleteAlert] = useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
+
   const router = useRouter();
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleDelete = async () => {
     setIsDeleteLoading(true);
 
-    const deleted = await deleteQuestion(row.original.id + '');
+    const result = await deleteScenario(row.original.id);
 
-    if (deleted) {
+    if (result.success) {
       setShowDeleteAlert(false);
       router.refresh();
+    } else {
+      toast({
+        title: 'Error Deleting Scenario',
+        description:
+          'There was an error deleting this scenario. Please try again',
+        variant: 'destructive',
+      });
     }
 
     setIsDeleteLoading(false);
@@ -83,7 +66,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteAlertDialog
-        title="Are you sure you want to delete this question?"
+        title="Are you sure you want to delete this scenario?"
         description="This action cannot be undone."
         open={showDeleteAlert}
         loading={isDeleteLoading}

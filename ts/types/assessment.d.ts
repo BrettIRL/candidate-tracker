@@ -2,6 +2,7 @@ export type AssessmentQuestion = {
   id: number;
   question: string;
   category: string;
+  scenario: string | null;
   answers: AssessmentAnswer[];
 };
 

@@ -14,6 +14,9 @@ export const questions = pgTable('assessment_questions', {
   category: serial('category_id')
     .notNull()
     .references(() => categories.id),
+  scenario: serial('scenario_id').references(() => scenarios.id, {
+    onDelete: 'set null',
+  }),
   question: text('question').notNull(),
   preScreening: boolean('pre_screening').notNull(),
 });
@@ -30,6 +33,12 @@ export const answers = pgTable('assessment_answers', {
 export const categories = pgTable('assessment_categories', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+});
+
+export const scenarios = pgTable('assessment_scenarios', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
 });
 
 export const userAnswers = pgTable(
@@ -64,5 +73,7 @@ export type Answer = typeof answers.$inferSelect;
 export type NewAnswer = typeof answers.$inferInsert;
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
+export type Scenario = typeof scenarios.$inferSelect;
+export type NewScenario = typeof scenarios.$inferInsert;
 export type UserAnswer = typeof userAnswers.$inferSelect;
 export type NewUserAnswer = typeof userAnswers.$inferInsert;

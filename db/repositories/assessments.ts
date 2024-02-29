@@ -9,6 +9,8 @@ import {
   type NewQuestion,
   type NewUserAnswer,
   userAnswers,
+  scenarios,
+  NewScenario,
 } from '@/db/schema/assessment';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
@@ -37,6 +39,18 @@ export async function deleteQuestion(questionId: number) {
       return false;
     }
   });
+}
+
+export async function deleteScenarioById(scenarioId: number) {
+  return db.delete(scenarios).where(eq(scenarios.id, scenarioId));
+}
+
+export async function getScenarios() {
+  return db.select().from(scenarios);
+}
+
+export async function insertScenario(scenario: NewScenario) {
+  return db.insert(scenarios).values(scenario).returning();
 }
 
 export async function getCandidatePrescreeningAnswers(
@@ -82,13 +96,15 @@ export async function getQuestionsAndAnswers() {
       id: questions.id,
       question: questions.question,
       category: categories.name,
+      scenario: scenarios.description,
       answers: sql`array_agg(json_build_object('id', ${answers.id}, 'answer', ${answers.answer}, 'answer', ${answers.answer}, 'weight', ${answers.weight}))`,
     })
     .from(questions)
     .innerJoin(categories, eq(questions.category, categories.id))
+    .leftJoin(scenarios, eq(questions.scenario, scenarios.id))
     .innerJoin(answers, eq(answers.questionId, questions.id))
     .where(eq(questions.preScreening, false))
-    .groupBy(questions.id, categories.name);
+    .groupBy(questions.id, categories.name, scenarios.description);
 }
 
 export async function getPrescreeningQuestions() {
