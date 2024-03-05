@@ -11,9 +11,9 @@ async function importCandidates(opportunityId: string) {
     const response = await fetch(
       '/api/candidates/import?opportunityId=' + opportunityId,
     );
-    const data = await response.json();
 
     if (!response.ok) {
+      const data = await response.json();
       throw new Error(
         `Error fetching candidates from SA Youth. Status: ${response.status}. ${data.message}`,
       );
