@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { OpportunityCompensationForm } from './opportunity-compensation-form';
 import { OpportunityDetailsForm } from './opportunity-details-form';
 import { OpportunityRequirementsForm } from './opportunity-requirements-form';
+import { createOpportunity } from '@/actions/create-opportunity';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
@@ -54,29 +54,21 @@ export function AddOpportunityForm() {
   const handleSubmit = async (data: OpportunityValues) => {
     setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/opportunities', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...data,
-          closingDate: format(data.closingDate, 'yyyy-MM-dd'),
-        }),
-      });
+    const result = await createOpportunity(data);
 
-      if (response.ok) {
-        setIsLoading(false);
-        form.reset();
-        router.refresh();
-        router.push(process.env.NEXT_PUBLIC_AUTHENTICATED_REDIRECT || '/');
-      }
-    } catch (error) {
-      setIsLoading(false);
+    if (result.success) {
+      form.reset();
+      router.refresh();
+      router.push(process.env.NEXT_PUBLIC_AUTHENTICATED_REDIRECT || '/');
+    } else {
       toast({
         title: 'Error creating opportunity',
-        description: (error as Error).message,
+        description: result.error,
         variant: 'destructive',
       });
     }
+
+    setIsLoading(false);
   };
 
   return (

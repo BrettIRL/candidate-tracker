@@ -34,8 +34,21 @@ export async function insertOpportunityWithTransaction(
       const saYouthRes = await response.json();
 
       if (!response.ok) {
+        let errMsg;
+
+        if (saYouthRes.errors) {
+          const errors: { [key: string]: string[] } = saYouthRes.errors;
+          errMsg = Object.values(errors)
+            .map(e => e[0])
+            .join('\n');
+        } else if (saYouthRes.errorResponseMessageDetails) {
+          errMsg = saYouthRes.errorResponseMessageDetails;
+        } else {
+          errMsg = 'Error sending opportunity to SA Youth';
+        }
+
         throw new Error(
-          `Error with external request. Status: ${response.status}. ${saYouthRes.errors}`,
+          `Error with external request. Status: ${response.status}. ${errMsg}`,
         );
       }
 
@@ -52,7 +65,10 @@ export async function insertOpportunityWithTransaction(
     } catch (error) {
       logger.error(error);
       tx.rollback();
-      return [];
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while saving opportunity');
     }
   });
 }

@@ -1,10 +1,6 @@
 'use server';
 
-import {
-  changeProviderStatus,
-  updateOpportunityByProviderId,
-} from '@/db/repositories/opportunities';
-import { Opportunity } from '@/db/schema/opportunities';
+import { updateOpportunityByProviderId } from '@/db/repositories/opportunities';
 import { logger } from '@/lib/logger';
 
 export async function getSAYOpportunityUrl(saYouthId: string) {
