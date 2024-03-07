@@ -78,6 +78,11 @@ export function CandidateAssessment({
     return questionCount <= Object.keys(answers).length;
   }, [allQuestions, answers]);
 
+  const categoryAnswered = useMemo(() => {
+    const category = categories[selectedCategory];
+    return answered[category]?.length === questions.length;
+  }, [answered, categories, questions, selectedCategory]);
+
   const scenario = useMemo(() => {
     // NOTE: Assumes only one scenario per questions in category
     const questionsWithScenario = questions.filter(q => q.scenario);
@@ -165,7 +170,10 @@ export function CandidateAssessment({
             Previous
           </Button>
           {selectedCategory + 1 < categories.length ? (
-            <Button onClick={() => handleCategoryChange(selectedCategory + 1)}>
+            <Button
+              onClick={() => handleCategoryChange(selectedCategory + 1)}
+              disabled={!categoryAnswered}
+            >
               Next
             </Button>
           ) : (
