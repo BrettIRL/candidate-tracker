@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, not, sql } from 'drizzle-orm';
 import { opportunities } from '../schema/opportunities';
 import type {
   Candidate,
@@ -8,7 +8,6 @@ import type {
 } from '@/db/schema/candidates';
 import { candidates, opportunitiesToCandidates } from '@/db/schema/candidates';
 import { db } from '@/lib/db';
-import { SMSTemplate } from '@/ts/enums';
 
 export async function getCandidates(): Promise<Candidate[]> {
   return db.select().from(candidates);
@@ -84,6 +83,24 @@ export async function getCandidatesForAssessmentSMS(opportunityId: number) {
         eq(opportunitiesToCandidates.opportunityId, opportunityId),
         eq(opportunitiesToCandidates.step, 1),
         isNull(opportunitiesToCandidates.assessmentSMSSentAt),
+      ),
+    );
+}
+
+export async function getUnsuccessfulCandidates(opportunityId: number) {
+  return db
+    .select()
+    .from(opportunitiesToCandidates)
+    .innerJoin(
+      candidates,
+      eq(opportunitiesToCandidates.candidateId, candidates.id),
+    )
+    .where(
+      and(
+        eq(opportunitiesToCandidates.opportunityId, opportunityId),
+        not(eq(opportunitiesToCandidates.step, 5)),
+        isNull(opportunitiesToCandidates.successfulSMSSentAt),
+        isNull(opportunitiesToCandidates.unsuccessfulSMSSentAt),
       ),
     );
 }
