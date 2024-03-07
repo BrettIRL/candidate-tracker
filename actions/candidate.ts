@@ -31,8 +31,12 @@ export async function sendUnsuccessfulSMS(opportunityId: number) {
     const candidatesToSMS = await getUnsuccessfulCandidates(opportunityId);
     const template = await getSetting(SMSTemplate.Unsuccessful);
 
-    if (!candidatesToSMS.length || !template) {
-      return;
+    if (!candidatesToSMS.length) {
+      return { success: true };
+    }
+
+    if (!template) {
+      return { success: false };
     }
 
     candidatesToSMS.forEach(candidate => {
