@@ -69,7 +69,11 @@ export function CandidateOverview({ onClick }: CandidateOverviewProps) {
             dangerouslySetInnerHTML={{ __html: content }}
           />
           {videoUrl && (
-            <iframe src={videoUrl} width="640" height="360" allowFullScreen />
+            <iframe
+              src={videoUrl}
+              className="mt-8 aspect-video w-full max-w-[720px]"
+              allowFullScreen
+            />
           )}
         </CardContent>
         <CardFooter className="flex justify-end">
